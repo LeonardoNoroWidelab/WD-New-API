@@ -9,6 +9,7 @@ let scene, renderer, mesh;
 let cameraRig;
 let cameraOrtho;
 const frustumSize = 600;
+let mouseX, mouseY;
 
 init();
 
@@ -102,11 +103,18 @@ function onWindowResize() {
   cameraOrtho.updateProjectionMatrix();
 }
 
-function render() {
-  const r = Date.now() * 0.00005;
+let lastMouseX, lastMouseY;
 
-  mesh.position.x = 700 * Math.cos(r);
+function render() {
+  const r = Date.now() * 0.0001;
+
+  lastMouseX =
+    lastMouseX !== mouseX && mouseX > 50 ? mouseX / 2 : 700 * Math.cos(r);
+  lastMouseY = lastMouseY !== mouseY && mouseY > 50 ? mouseY / 2 : 0;
+
+  mesh.position.x = lastMouseX;
   mesh.position.z = 700 * Math.sin(r);
+  mesh.position.y = lastMouseY;
 
   cameraOrtho.far = mesh.position.length();
   cameraOrtho.updateProjectionMatrix();
@@ -117,3 +125,8 @@ function render() {
   // renderer.setViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   renderer.render(scene, cameraOrtho);
 }
+
+onmousemove = function (e) {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+};
