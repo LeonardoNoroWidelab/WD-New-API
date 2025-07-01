@@ -130,37 +130,42 @@ Para o vendedor
 
 Incluir filtro de **mês** e **ano** opcionais para os dados do Supervisor e dados da loja.
 
-## 🔍 Filtros data Supervisor 🧑‍💼
+### 🔍 Filtros data Supervisor 🧑‍💼
 
-### 📊 Dashboard
+#### 📊 Dashboard
 
 `GET`
 `/cupomapi/kpis/suprvisor?userid={userId}&mes=7&ano=2025`
 
-### 🏪 Lista de lojas
+#### 🏪 Lista de lojas
 
 `GET`
 `/loja/suprvisor?userid={userId}&page=2&mes=7&ano=2025`
 
 > O filtro de mes e ano é necessário nas lojas também porque agora vai ter quantidade de cupons dessa loja na lista de lojas.
 
-## 🔍 Filtros data Loja (Gerente) 🏪
+### 🔍 Filtros data Loja (Gerente) 🏪
 
-### 📊 Dashboard
+#### 📊 Dashboard
 
 `GET`
 `/cupomapi/kpis/loja?cnpj=59218223000172&mes=7&ano=2025`
 
-### 🧍 Lista de Vendedores
+#### 🧍 Lista de Vendedores
 
 `GET`
 `/cupomapi/vendedores?cnpj=59218223000172&mes=7&ano=2025`
 
-## 🔍 Filtros data Vendedor 🧍
+### 🔍 Filtros data Vendedor 🧍
 
-### 📊 Dashboard
+#### 📊 Dashboard
 
 `GET`
 `/cupomapi/kpis/vendedor?userid={userId}&mes=7&ano=2025`
+
+#### 📊 Extrato
+
+`GET`
+`/api/extratos?cupom={cupom}&mes=7&ano=2025`
 
 > Lembrando que os filtros de data devem ser opcionais, pois é possível do usuário querer saber dados do ano inteiro ou dados de tudo desde o início.
