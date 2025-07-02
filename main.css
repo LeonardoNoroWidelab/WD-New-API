@@ -82,8 +82,10 @@ body {
 
 @media (max-width: 500px) {
   .container {
-    padding: 22px 6px 14px 6px;
-    max-width: 98vw;
+    background: none;
+    box-shadow: none;
+    border: none;
+    backdrop-filter: none;
   }
   .logo {
     font-size: 1.3rem;
