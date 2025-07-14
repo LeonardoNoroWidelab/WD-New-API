@@ -24,23 +24,17 @@ Documentação da API do módulo **Vitrine** e **Vitrine VM**, com rotas voltada
     {
       "name": "VESTIDO COM APLICAÇÃO PRETO",
       "ref": "442201321",
-      "codigos": "|7900112868716|7900112868723|7900112868730|7900112868747|7900112868754|",
-      "imagem": "https://aws.com/p1.jpg",
-      "tiposid": [1, 2, 3]
+      "imagem": "https://aws.com/p1.jpg"
     },
     {
       "name": "CAMISETA PRETO",
       "ref": "442201123",
-      "codigos": "|7900112868712|7900112868723|7900112868734|7900112868745|7900112868756|",
-      "imagem": "https://aws.com/p3.jpg",
-      "tiposid": [1, 2, 3]
+      "imagem": "https://aws.com/p3.jpg"
     },
     {
       "name": "SAIA COM APLICAÇÃO PRETO",
       "ref": "82200685",
-      "codigos": "|7900179117475|7900179117482|7900179117499|7900179117505|7900179117512|",
-      "imagem": "https://aws.com/p2.jpg",
-      "tiposid": [2, 3]
+      "imagem": "https://aws.com/p2.jpg"
     }
   ],
 
@@ -96,23 +90,17 @@ Na busca de vitrines ter o filtro de **appId**. Buscar todos os agendamentos cad
         {
           "name": "VESTIDO COM APLICAÇÃO PRETO",
           "ref": "442201321",
-          "codigos": "|7900112868716|7900112868723|7900112868730|7900112868747|7900112868754|",
-          "imagem": "https://aws.com/p1.jpg",
-          "tiposid": [1, 2, 3]
+          "imagem": "https://aws.com/p1.jpg"
         },
         {
           "name": "CAMISETA PRETO",
           "ref": "442201123",
-          "codigos": "|7900112868712|7900112868723|7900112868734|7900112868745|7900112868756|",
-          "imagem": "https://aws.com/p3.jpg",
-          "tiposid": [1, 2, 3]
+          "imagem": "https://aws.com/p3.jpg"
         },
         {
           "name": "SAIA COM APLICAÇÃO PRETO",
           "ref": "82200685",
-          "codigos": "|7900179117475|7900179117482|7900179117499|7900179117505|7900179117512|",
-          "imagem": "https://aws.com/p2.jpg",
-          "tiposid": [2, 3]
+          "imagem": "https://aws.com/p2.jpg"
         }
       ],
 
@@ -186,13 +174,11 @@ Por exemplo:
         {
           "name": "VESTIDO COM APLICAÇÃO PRETO",
           "ref": "442201321",
-          "codigos": "|7900112868716|7900112868723|7900112868730|7900112868747|7900112868754|",
           "imagem": "https://aws.com/p1.jpg"
         },
         {
           "name": "CAMISETA PRETO",
           "ref": "442201123",
-          "codigos": "|7900112868712|7900112868723|7900112868734|7900112868745|7900112868756|",
           "imagem": "https://aws.com/p3.jpg"
         }
       ],
