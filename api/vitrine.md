@@ -42,25 +42,21 @@ Documentação da API do módulo **Vitrine** e **Vitrine VM**, com rotas voltada
     {
       "urlImagem": "https://aws.com/l1.jpg",
       "referencias": ["442201321", "442201123"],
-      "tiposid": [1, 2, 3],
       "tipo": "look"
     },
     {
       "urlImagem": "https://aws.com/l2.jpg",
       "referencias": [],
-      "tiposid": [2, 3],
       "tipo": "display"
     }
   ],
 
   "imagens": [
     {
-      "urlimagem": "https://aws.com/i1.jpg",
-      "tiposid": [1, 2, 3]
+      "urlimagem": "https://aws.com/i1.jpg"
     },
     {
-      "urlimagem": "https://aws.com/i2.jpg",
-      "tiposid": [2, 3]
+      "urlimagem": "https://aws.com/i2.jpg"
     }
   ]
 }
@@ -108,25 +104,21 @@ Na busca de vitrines ter o filtro de **appId**. Buscar todos os agendamentos cad
         {
           "urlImagem": "https://aws.com/l1.jpg",
           "referencias": ["442201321", "442201123"],
-          "tiposid": [1, 2, 3],
           "tipo": "look"
         },
         {
           "urlImagem": "https://aws.com/l2.jpg",
           "referencias": [],
-          "tiposid": [2, 3],
           "tipo": "display"
         }
       ],
 
       "imagens": [
         {
-          "urlimagem": "https://aws.com/i1.jpg",
-          "tiposid": [1, 2, 3]
+          "urlimagem": "https://aws.com/i1.jpg"
         },
         {
-          "urlimagem": "https://aws.com/i2.jpg",
-          "tiposid": [2, 3]
+          "urlimagem": "https://aws.com/i2.jpg"
         }
       ]
     }
