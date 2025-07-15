@@ -165,13 +165,11 @@ Por exemplo:
       "produtos": [
         {
           "name": "VESTIDO COM APLICAÇÃO PRETO",
-          "ref": "442201321",
-          "imagem": "https://aws.com/p1.jpg"
+          "ref": "442201321"
         },
         {
           "name": "CAMISETA PRETO",
-          "ref": "442201123",
-          "imagem": "https://aws.com/p3.jpg"
+          "ref": "442201123"
         }
       ],
 
