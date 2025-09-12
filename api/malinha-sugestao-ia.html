@@ -5,16 +5,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <script src="
+https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js
+"></script>
     <link
+      href="
+https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css
+"
       rel="stylesheet"
-      href="file:///c:\Users\leona\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.8.19\crossnote\dependencies\katex\katex.min.css"
     />
-
-    <script
-      type="text/javascript"
-      src="file:///c:\Users\leona\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.8.19\crossnote\dependencies\mermaid\mermaid.min.js"
-      charset="UTF-8"
-    ></script>
 
     <script src="
 https://cdn.jsdelivr.net/npm/mermaid@11.11.0/dist/mermaid.min.js
@@ -1079,30 +1078,30 @@ https://cdn.jsdelivr.net/npm/mermaid@11.11.0/dist/mermaid.min.js
       <h2 id="estados-máquinas-de-estado">Estados (máquinas de estado)</h2>
       <h3 id="-mala-ia">🧳 Mala IA</h3>
       <pre class="mermaid">
-        stateDiagram-v2
-          [*] --> Criado
+stateDiagram-v2
+  [*] --> Criado
 
-          state "Em processamento pela IA" as ProcIA
-          state "Retornado pela IA" as RetIA
-          state "Em conferência da Mala" as ConfMala
-          state "Finalizado mala" as Finalizado
-          state "Cancelado mala manualmente" as CanceladoManual
-          state "Cancelado mala por tempo de expiração" as CanceladoExp
+  state "Em processamento pela IA" as ProcIA
+  state "Retornado pela IA" as RetIA
+  state "Em conferência da Mala" as ConfMala
+  state "Finalizado mala" as Finalizado
+  state "Cancelado mala manualmente" as CanceladoManual
+  state "Cancelado mala por tempo de expiração" as CanceladoExp
 
-          Criado --> ProcIA : submit à IA
-          ProcIA --> RetIA : IA devolve produtos
-          RetIA --> ConfMala : vendedor inicia conferência
-          ConfMala --> Finalizado : gerar Pré-Venda (Almode)
-          Criado --> CanceladoManual
-          Criado --> CanceladoExp
-      </pre>
+  Criado --> ProcIA : submit à IA
+  ProcIA --> RetIA : IA devolve produtos
+  RetIA --> ConfMala : vendedor inicia conferência
+  ConfMala --> Finalizado : gerar Pré-Venda (Almode)
+  RetIA --> CanceladoManual
+  RetIA --> CanceladoExp
+      </div>
       <h3 id="-produto-da-mala">🧾 Produto da Mala</h3>
       <pre class="mermaid">
-        stateDiagram-v2
-          [*] --> Criado
-          Criado --> Aprovado
-          Criado --> Rejeitado: motivo obrigatório
-          Criado --> Substituído: motivo obrigatório e vincula Produto Novo
+stateDiagram-v2
+  [*] --> Criado
+  Criado --> Aprovado
+  Criado --> Rejeitado: motivo obrigatório
+  Criado --> Substituído: motivo obrigatório e vincula Produto Novo
       </pre>
       <hr />
       <h2 id="-websocket-de-integração-com-a-ia-eventos">

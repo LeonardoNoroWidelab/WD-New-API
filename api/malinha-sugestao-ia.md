@@ -146,8 +146,8 @@ stateDiagram-v2
   ProcIA --> RetIA : IA devolve produtos
   RetIA --> ConfMala : vendedor inicia conferência
   ConfMala --> Finalizado : gerar Pré-Venda (Almode)
-  Criado --> CanceladoManual
-  Criado --> CanceladoExp
+  RetIA --> CanceladoManual
+  RetIA --> CanceladoExp
 ```
 
 ### 🧾 Produto da Mala
