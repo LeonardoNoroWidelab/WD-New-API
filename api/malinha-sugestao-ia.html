@@ -6,7 +6,7 @@
       <link rel="stylesheet" href="file:///c:\Users\leona\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.8.19\crossnote\dependencies\katex\katex.min.css">
       
       
-      
+      <script type="text/javascript" src="file:///c:\Users\leona\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.8.19\crossnote\dependencies\mermaid\mermaid.min.js" charset="UTF-8"></script>
       
       
       <style>
@@ -24,7 +24,7 @@
     
       <div class="crossnote markdown-preview  ">
       
-<h1 id="-malas-ia">🧠📦 Malas IA </h1>
+<h1 id="-malas-ia">🧠🧳 Malas IA </h1>
 <blockquote>
 <p>Documentação de referência para as <strong>novas APIs</strong> do projeto que cria <em>Malas</em> a partir de malas sugeridas por uma IA.</p>
 </blockquote>
@@ -102,7 +102,7 @@
 <li><code>id_usuario</code>: <code>number</code></li>
 <li><code>app_id</code>: <code>varchar</code></li>
 </ul>
-<h3 id="malas-ia">Malas IA </h3>
+<h4 id="-malas-ia-1">🧳 Malas IA </h4>
 <ul>
 <li>
 <p><code>uuid</code>: <code>varchar</code> <em>(único)</em></p>
@@ -216,18 +216,107 @@
 <li><code>dias_validade_mala</code>: <code>number</code> <em>(opcional, em dias)</em></li>
 </ul>
 <hr>
-<h2 id="websocket-usado-pela-ia">WebSocket usado pela IA </h2>
+<h2 id="estados-máquinas-de-estado">Estados (máquinas de estado) </h2>
+<h3 id="-mala-ia">🧳 Mala IA </h3>
+<div class="mermaid">stateDiagram-v2
+  [*] --&gt; Criado
+
+  state "Em processamento pela IA" as ProcIA
+  state "Retornado pela IA" as RetIA
+  state "Em conferência da Mala" as ConfMala
+  state "Finalizado mala" as Finalizado
+  state "Cancelado mala manualmente" as CanceladoManual
+  state "Cancelado mala por tempo de expiração" as CanceladoExp
+
+  Criado --&gt; ProcIA : submit à IA
+  ProcIA --&gt; RetIA : IA devolve produtos
+  RetIA --&gt; ConfMala : vendedor inicia conferência
+  ConfMala --&gt; Finalizado : gerar Pré-Venda (Almode)
+  Criado --&gt; CanceladoManual
+  Criado --&gt; CanceladoExp
+</div><h3 id="-produto-da-mala">🧾 Produto da Mala </h3>
+<div class="mermaid">stateDiagram-v2
+  [*] --&gt; Criado
+  Criado --&gt; Aprovado
+  Criado --&gt; Rejeitado: motivo obrigatório
+  Criado --&gt; Substituído: motivo obrigatório e vincula Produto Novo
+</div><hr>
+<h2 id="-websocket-de-integração-com-a-ia-eventos">🔌 WebSocket de Integração com a IA (Eventos) </h2>
 <blockquote>
-<p>Canais de integração para a IA registrar e consumir dados de malas.</p>
+<p>O servidor mantém <strong>um único cliente</strong> conectado (a IA) por questões de segurança.<br>
+A autenticação é feita no <strong>handshake</strong> via <strong>Bearer Token</strong> (use <code>wss://</code>).</p>
 </blockquote>
-<h3 id="post--registrar-produtos-da-mala"><code>POST</code> — <strong>Registrar produtos da mala</strong> </h3>
+<h3 id="-autenticação--conexão-única">🔐 Autenticação &amp; Conexão Única </h3>
 <ul>
-<li><strong>Entrada</strong>: Dados do cliente, dados do vendedor e dados da loja</li>
-<li><strong>Efeito</strong>: grava itens em <strong>Produtos Malas IA</strong> e altera o <strong>status da mala</strong> para <strong>3 = Retornado pela IA</strong>.</li>
+<li><strong>Autorização</strong> no handshake: <code>Authorization: Bearer &lt;TOKEN&gt;</code>.</li>
+<li><strong>Apenas 1 conexão ativa</strong>: novas conexões são recusadas enquanto houver sessão válida.</li>
 </ul>
-<p><strong>Exemplo de retorno</strong></p>
+<blockquote>
+<p>Exemplo (cliente IA — Node/WebSocket):</p>
+</blockquote>
+<pre data-role="codeBlock" data-info="js" class="language-javascript js"><code><span class="token keyword module keyword-import">import</span> <span class="token imports"><span class="token maybe-class-name">WebSocket</span></span> <span class="token keyword module keyword-from">from</span> <span class="token string">'ws'</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> ws <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">WebSocket</span><span class="token punctuation">(</span><span class="token string">'wss://appmala.amctextil.com.br/ia/socket'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">headers</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">Authorization</span><span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Bearer </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>process<span class="token punctuation">.</span><span class="token property-access">env</span><span class="token punctuation">.</span><span class="token constant">IA_TOKEN</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><hr>
+<h2 id="-eventos">📡 Eventos </h2>
+<h3 id="-evento-emitido-pelo-servidor--ia">🟢 Evento emitido pelo <strong>servidor → IA</strong> </h3>
+<h4 id="servermalaspendentes"><code>server.malas.pendentes</code> </h4>
+<blockquote>
+<p>Notifica a IA sobre <strong>novas solicitações de malas</strong> para processamento.</p>
+</blockquote>
+<p><strong>Payload (exemplo)</strong></p>
+<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
+  <span class="token property">"malas"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"uuid"</span><span class="token operator">:</span> <span class="token string">"d1d6f1a4-5c0a-4b9e-8a4d-2f8f0f7e5a10"</span><span class="token punctuation">,</span>
+      <span class="token property">"cliente"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"12345678912"</span><span class="token punctuation">,</span>
+        <span class="token property">"nome"</span><span class="token operator">:</span> <span class="token string">"Cliente de teste"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"vendedor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"78654321891"</span><span class="token punctuation">,</span>
+        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"colcci-usuario@widelab.com.br"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"loja"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"cnpj"</span><span class="token operator">:</span> <span class="token string">"12345678901234"</span><span class="token punctuation">,</span>
+        <span class="token property">"nome"</span><span class="token operator">:</span> <span class="token string">"Loja de teste"</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre><p><strong>Observações</strong></p>
+<ul>
+<li>Pode ser enviado periodicamente ou sob demanda (quando uma mala é criada).</li>
+<li>A IA deve <strong>iterar</strong> pelas malas e enviar os produtos sugeridos (ver próximo evento).</li>
+</ul>
+<hr>
+<h3 id="-evento-enviado-pela-ia--servidor">🔵 Evento enviado pela <strong>IA → servidor</strong> </h3>
+<h4 id="iamalaregistrar"><code>ia.mala.registrar</code> </h4>
+<blockquote>
+<p>A IA <strong>registra os produtos sugeridos</strong> para a mala e o servidor atualiza os dados.</p>
+</blockquote>
+<p><strong>Entrada — campos mínimos</strong></p>
+<ul>
+<li><strong>Dados de contexto</strong>: cliente, vendedor, loja (para auditoria/validação)</li>
+<li><strong>Identificador da mala</strong>: <code>uuid</code></li>
+<li><strong>Itens sugeridos</strong>: <code>produtos[]</code></li>
+</ul>
+<p><strong>Payload (exemplo)</strong></p>
 <pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
   <span class="token property">"uuid"</span><span class="token operator">:</span> <span class="token string">"d1d6f1a4-5c0a-4b9e-8a4d-2f8f0f7e5a10"</span><span class="token punctuation">,</span>
+  <span class="token property">"cliente"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"12345678912"</span><span class="token punctuation">,</span>
+    <span class="token property">"nome"</span><span class="token operator">:</span> <span class="token string">"Cliente de teste"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"vendedor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"78654321891"</span><span class="token punctuation">,</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"colcci-usuario@widelab.com.br"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"loja"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"cnpj"</span><span class="token operator">:</span> <span class="token string">"12345678901234"</span><span class="token punctuation">,</span>
+    <span class="token property">"nome"</span><span class="token operator">:</span> <span class="token string">"Loja de teste"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token property">"produtos"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
       <span class="token property">"referencia"</span><span class="token operator">:</span> <span class="token string">"9010881061"</span><span class="token punctuation">,</span>
@@ -235,12 +324,57 @@
       <span class="token property">"ean"</span><span class="token operator">:</span> <span class="token string">"7891234567890"</span><span class="token punctuation">,</span>
       <span class="token property">"tamanho"</span><span class="token operator">:</span> <span class="token string">"M"</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span> <span class="token property">"referencia"</span><span class="token operator">:</span> <span class="token string">"9010881062"</span><span class="token punctuation">,</span> <span class="token property">"cor"</span><span class="token operator">:</span> <span class="token string">"branco"</span><span class="token punctuation">,</span> <span class="token property">"ean"</span><span class="token operator">:</span> <span class="token string">"7891234567891"</span> <span class="token punctuation">}</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"referencia"</span><span class="token operator">:</span> <span class="token string">"9010881062"</span><span class="token punctuation">,</span>
+      <span class="token property">"cor"</span><span class="token operator">:</span> <span class="token string">"branco"</span><span class="token punctuation">,</span>
+      <span class="token property">"ean"</span><span class="token operator">:</span> <span class="token string">"7891234567891"</span>
+    <span class="token punctuation">}</span>
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
-</code></pre><h3 id="get--buscar-solicitações-de-novas-malas"><code>GET</code> — <strong>Buscar solicitações de novas malas</strong> </h3>
+</code></pre><p><strong>Efeito no backend</strong></p>
 <ul>
-<li><strong>Saída</strong>: array de malas pendentes para processamento pela IA.</li>
+<li>Persiste itens em <strong>Produtos Malas IA</strong>.</li>
+<li>Atualiza <strong>status da Mala</strong> para <strong><code>3 = Retornado pela IA</code></strong>.</li>
+<li>Garante <strong>idempotência</strong> por <code>uuid</code> (repetições não duplicam itens).</li>
+</ul>
+<p><strong>Ack do servidor (resposta)</strong></p>
+<ul>
+<li>Sucesso: <code>server.mala.registrada</code></li>
+</ul>
+<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
+  <span class="token property">"uuid"</span><span class="token operator">:</span> <span class="token string">"d1d6f1a4-5c0a-4b9e-8a4d-2f8f0f7e5a10"</span><span class="token punctuation">,</span>
+  <span class="token property">"status"</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+  <span class="token property">"totalProdutos"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+  <span class="token property">"ok"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+<span class="token punctuation">}</span>
+</code></pre><ul>
+<li>Erro: <code>server.erro</code></li>
+</ul>
+<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
+  <span class="token property">"code"</span><span class="token operator">:</span> <span class="token string">"VALIDATION_ERROR"</span><span class="token punctuation">,</span>
+  <span class="token property">"message"</span><span class="token operator">:</span> <span class="token string">"Campo 'produtos[0].referencia' é obrigatório"</span><span class="token punctuation">,</span>
+  <span class="token property">"uuid"</span><span class="token operator">:</span> <span class="token string">"d1d6f1a4-5c0a-4b9e-8a4d-2f8f0f7e5a10"</span>
+<span class="token punctuation">}</span>
+</code></pre><hr>
+<h2 id="-fluxo-resumido-sequência">🔁 Fluxo resumido (sequência) </h2>
+<div class="mermaid">sequenceDiagram
+  participant S as Servidor
+  participant IA as Cliente IA
+
+  IA-&gt;&gt;S: Handshake (Authorization: Bearer &lt;token&gt;)
+  S--&gt;&gt;IA: Conexão aceita
+
+  S--&gt;&gt;IA: server.malas.pendentes { malas: [...] }
+  IA--&gt;&gt;S: ia.mala.registrar { uuid, cliente, vendedor, loja, produtos[] }
+  S--&gt;&gt;IA: server.mala.registrada { uuid, status: 3, totalProdutos, ok: true }
+</div><hr>
+<h2 id="-boas-práticas">✅ Boas práticas </h2>
+<ul>
+<li><strong>WSS obrigatório</strong> e validação de <strong>Bearer Token</strong> em todo handshake.</li>
+<li><strong>Conexão única</strong>: rejeitar conexões extras com código/razão apropriados.</li>
+<li><strong>Idempotência por <code>uuid</code></strong> para evitar duplicidade em retransmissões.</li>
+<li><strong>Backoff com jitter</strong> na reconexão da IA.</li>
+<li><strong>Logs</strong> com <code>uuid</code>, horário e resultado para auditoria.</li>
 </ul>
 <hr>
 <h2 id="apis">APIs </h2>
@@ -380,7 +514,43 @@
       
     
     
-    
+    <script type="module">
+// TODO: If ZenUML gets integrated into mermaid in the future,
+//      we can remove the following lines.
+
+
+var MERMAID_CONFIG = ({"startOnLoad":false});
+if (typeof MERMAID_CONFIG !== 'undefined') {
+  MERMAID_CONFIG.startOnLoad = false
+  MERMAID_CONFIG.cloneCssStyles = false
+  MERMAID_CONFIG.theme = "default"
+}
+
+mermaid.initialize(MERMAID_CONFIG || {})
+if (typeof(window['Reveal']) !== 'undefined') {
+  function mermaidRevealHelper(event) {
+    var currentSlide = event.currentSlide
+    var diagrams = currentSlide.querySelectorAll('.mermaid')
+    for (var i = 0; i < diagrams.length; i++) {
+      var diagram = diagrams[i]
+      if (!diagram.hasAttribute('data-processed')) {
+        mermaid.init(null, diagram, ()=> {
+          Reveal.slide(event.indexh, event.indexv)
+        })
+      }
+    }
+  }
+  Reveal.addEventListener('slidetransitionend', mermaidRevealHelper)
+  Reveal.addEventListener('ready', mermaidRevealHelper)
+  await mermaid.run({
+    nodes: document.querySelectorAll('.mermaid')
+  })
+} else {
+  await mermaid.run({
+    nodes: document.querySelectorAll('.mermaid')
+  })
+}
+</script>
     
     
     

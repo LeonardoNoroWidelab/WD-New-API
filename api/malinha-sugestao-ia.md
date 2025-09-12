@@ -1,4 +1,4 @@
-# 🧠📦 Malas IA
+# 🧠🧳 Malas IA
 
 > Documentação de referência para as **novas APIs** do projeto que cria _Malas_ a partir de malas sugeridas por uma IA.
 
@@ -68,7 +68,7 @@
 - `id_usuario`: `number`
 - `app_id`: `varchar`
 
-### Malas IA
+#### 🧳 Malas IA
 
 - `uuid`: `varchar` _(único)_
 - `id_almode`: `number` _(nullable)_
@@ -127,20 +127,130 @@
 
 ---
 
-## WebSocket usado pela IA
+## Estados (máquinas de estado)
 
-> Canais de integração para a IA registrar e consumir dados de malas.
+### 🧳 Mala IA
 
-### `POST` — **Registrar produtos da mala**
+```mermaid
+stateDiagram-v2
+  [*] --> Criado
 
-- **Entrada**: Dados do cliente, dados do vendedor e dados da loja
-- **Efeito**: grava itens em **Produtos Malas IA** e altera o **status da mala** para **3 = Retornado pela IA**.
+  state "Em processamento pela IA" as ProcIA
+  state "Retornado pela IA" as RetIA
+  state "Em conferência da Mala" as ConfMala
+  state "Finalizado mala" as Finalizado
+  state "Cancelado mala manualmente" as CanceladoManual
+  state "Cancelado mala por tempo de expiração" as CanceladoExp
 
-**Exemplo de retorno**
+  Criado --> ProcIA : submit à IA
+  ProcIA --> RetIA : IA devolve produtos
+  RetIA --> ConfMala : vendedor inicia conferência
+  ConfMala --> Finalizado : gerar Pré-Venda (Almode)
+  Criado --> CanceladoManual
+  Criado --> CanceladoExp
+```
+
+### 🧾 Produto da Mala
+
+```mermaid
+stateDiagram-v2
+  [*] --> Criado
+  Criado --> Aprovado
+  Criado --> Rejeitado: motivo obrigatório
+  Criado --> Substituído: motivo obrigatório e vincula Produto Novo
+```
+
+---
+
+## 🔌 WebSocket de Integração com a IA (Eventos)
+
+> O servidor mantém **um único cliente** conectado (a IA) por questões de segurança.
+> A autenticação é feita no **handshake** via **Bearer Token** (use `wss://`).
+
+### 🔐 Autenticação & Conexão Única
+
+- **Autorização** no handshake: `Authorization: Bearer <TOKEN>`.
+- **Apenas 1 conexão ativa**: novas conexões são recusadas enquanto houver sessão válida.
+
+> Exemplo (cliente IA — Node/WebSocket):
+
+```js
+import WebSocket from 'ws';
+const ws = new WebSocket('wss://appmala.amctextil.com.br/ia/socket', {
+  headers: { Authorization: `Bearer ${process.env.IA_TOKEN}` },
+});
+```
+
+---
+
+## 📡 Eventos
+
+### 🟢 Evento emitido pelo **servidor → IA**
+
+#### `server.malas.pendentes`
+
+> Notifica a IA sobre **novas solicitações de malas** para processamento.
+
+**Payload (exemplo)**
+
+```json
+{
+  "malas": [
+    {
+      "uuid": "d1d6f1a4-5c0a-4b9e-8a4d-2f8f0f7e5a10",
+      "cliente": {
+        "cpf": "12345678912",
+        "nome": "Cliente de teste"
+      },
+      "vendedor": {
+        "cpf": "78654321891",
+        "id": "colcci-usuario@widelab.com.br"
+      },
+      "loja": {
+        "cnpj": "12345678901234",
+        "nome": "Loja de teste"
+      }
+    }
+  ]
+}
+```
+
+**Observações**
+
+- Pode ser enviado periodicamente ou sob demanda (quando uma mala é criada).
+- A IA deve **iterar** pelas malas e enviar os produtos sugeridos (ver próximo evento).
+
+---
+
+### 🔵 Evento enviado pela **IA → servidor**
+
+#### `ia.mala.registrar`
+
+> A IA **registra os produtos sugeridos** para a mala e o servidor atualiza os dados.
+
+**Entrada — campos mínimos**
+
+- **Dados de contexto**: cliente, vendedor, loja (para auditoria/validação)
+- **Identificador da mala**: `uuid`
+- **Itens sugeridos**: `produtos[]`
+
+**Payload (exemplo)**
 
 ```json
 {
   "uuid": "d1d6f1a4-5c0a-4b9e-8a4d-2f8f0f7e5a10",
+  "cliente": {
+    "cpf": "12345678912",
+    "nome": "Cliente de teste"
+  },
+  "vendedor": {
+    "cpf": "78654321891",
+    "id": "colcci-usuario@widelab.com.br"
+  },
+  "loja": {
+    "cnpj": "12345678901234",
+    "nome": "Loja de teste"
+  },
   "produtos": [
     {
       "referencia": "9010881061",
@@ -148,14 +258,70 @@
       "ean": "7891234567890",
       "tamanho": "M"
     },
-    { "referencia": "9010881062", "cor": "branco", "ean": "7891234567891" }
+    {
+      "referencia": "9010881062",
+      "cor": "branco",
+      "ean": "7891234567891"
+    }
   ]
 }
 ```
 
-### `GET` — **Buscar solicitações de novas malas**
+**Efeito no backend**
 
-- **Saída**: array de malas pendentes para processamento pela IA.
+- Persiste itens em **Produtos Malas IA**.
+- Atualiza **status da Mala** para **`3 = Retornado pela IA`**.
+- Garante **idempotência** por `uuid` (repetições não duplicam itens).
+
+**Ack do servidor (resposta)**
+
+- Sucesso: `server.mala.registrada`
+
+```json
+{
+  "uuid": "d1d6f1a4-5c0a-4b9e-8a4d-2f8f0f7e5a10",
+  "status": 3,
+  "totalProdutos": 2,
+  "ok": true
+}
+```
+
+- Erro: `server.erro`
+
+```json
+{
+  "code": "VALIDATION_ERROR",
+  "message": "Campo 'produtos[0].referencia' é obrigatório",
+  "uuid": "d1d6f1a4-5c0a-4b9e-8a4d-2f8f0f7e5a10"
+}
+```
+
+---
+
+## 🔁 Fluxo resumido (sequência)
+
+```mermaid
+sequenceDiagram
+  participant S as Servidor
+  participant IA as Cliente IA
+
+  IA->>S: Handshake (Authorization: Bearer <token>)
+  S-->>IA: Conexão aceita
+
+  S-->>IA: server.malas.pendentes { malas: [...] }
+  IA-->>S: ia.mala.registrar { uuid, cliente, vendedor, loja, produtos[] }
+  S-->>IA: server.mala.registrada { uuid, status: 3, totalProdutos, ok: true }
+```
+
+---
+
+## ✅ Boas práticas
+
+- **WSS obrigatório** e validação de **Bearer Token** em todo handshake.
+- **Conexão única**: rejeitar conexões extras com código/razão apropriados.
+- **Idempotência por `uuid`** para evitar duplicidade em retransmissões.
+- **Backoff com jitter** na reconexão da IA.
+- **Logs** com `uuid`, horário e resultado para auditoria.
 
 ---
 
