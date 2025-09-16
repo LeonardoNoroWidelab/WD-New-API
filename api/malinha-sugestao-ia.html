@@ -1086,14 +1086,14 @@
       </div>
       <h3 id="-produto-da-mala">🧾 Produto da Mala</h3>
       <div class="mermaid">
-        stateDiagram-v2 [*] --&gt; Criado state "Substituído" as Substituido
-        Criado --&gt; Aprovado : API Aprovar Criado --&gt; Rejeitado : API
-        Rejeitar (motivo obrigatório) Criado --&gt; Substituído: motivo
-        obrigatório e vincula Produto Novo note right of Aprovado Se este for o
-        primeiro produto alterado e a mala estiver em "Retornado pela IA" (3),
-        backend muda a mala para "Em conferência" (4). end note note right of
-        Rejeitado Mesma regra acima para primeira ação. end note note right of
-        Substituido Mesma regra acima para primeira ação. end note
+        stateDiagram-v2 [*] --&gt; Criado Criado --&gt; Aprovado : API Aprovar
+        Criado --&gt; Rejeitado : API Rejeitar (motivo obrigatório) Criado
+        --&gt; Substituído: motivo obrigatório e vincula Produto Novo note right
+        of Aprovado Se este for o primeiro produto alterado e a mala estiver em
+        "Retornado pela IA" (3), backend muda a mala para "Em conferência" (4).
+        end note note right of Rejeitado Mesma regra acima para primeira ação.
+        end note note right of Substituído Mesma regra acima para primeira ação.
+        end note
       </div>
       <hr />
       <h2 id="-websocket-de-integração-com-a-ia-eventos">

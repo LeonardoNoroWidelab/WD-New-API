@@ -163,8 +163,6 @@ stateDiagram-v2
 stateDiagram-v2
   [*] --> Criado
 
-  state "Substituído" as Substituido
-
   Criado --> Aprovado : API Aprovar
   Criado --> Rejeitado : API Rejeitar (motivo obrigatório)
   Criado --> Substituído: motivo obrigatório e vincula Produto Novo
@@ -179,7 +177,7 @@ stateDiagram-v2
     Mesma regra acima para primeira ação.
   end note
 
-  note right of Substituido
+  note right of Substituído
     Mesma regra acima para primeira ação.
   end note
 ```
