@@ -1071,30 +1071,56 @@
       <hr />
       <h2 id="estados-máquinas-de-estado">Estados (máquinas de estado)</h2>
       <h3 id="-mala-ia">🧳 Mala IA</h3>
-      <div class="mermaid">
-        stateDiagram-v2 [*] --&gt; Criado state "Em processamento pela IA" as
-        ProcIA state "Retornado pela IA" as RetIA state "Em conferência da Mala"
-        as ConfMala state "Finalizado mala" as Finalizado state "Cancelado mala
-        manualmente" as CanceladoManual state "Cancelado mala por tempo de
-        expiração" as CanceladoExp Criado --&gt; ProcIA : submit à IA ProcIA
-        --&gt; RetIA : IA devolve produtos RetIA --&gt; ConfMala : 1ª ação de
-        produto (aprovar/rejeitar/substituir) ConfMala --&gt; Finalizado : gerar
-        Pré-Venda (Almode) RetIA --&gt; CanceladoManual RetIA --&gt;
-        CanceladoExp note right of RetIA Ao aprovar, rejeitar ou substituir o
-        primeiro produto da mala, o backend altera o status da mala para "Em
-        conferência da Mala" (4). end note
-      </div>
+      <pre class="mermaid">
+stateDiagram-v2
+  [*] --> Criado
+
+  state "Em processamento pela IA" as ProcIA
+  state "Retornado pela IA" as RetIA
+  state "Em conferência da Mala" as ConfMala
+  state "Finalizado mala" as Finalizado
+  state "Cancelado mala manualmente" as CanceladoManual
+  state "Cancelado mala por tempo de expiração" as CanceladoExp
+
+  Criado --> ProcIA : submit à IA
+  ProcIA --> RetIA : IA devolve produtos
+  RetIA --> ConfMala : 1ª ação de produto (aprovar/rejeitar/substituir)
+  ConfMala --> Finalizado : gerar Pré-Venda (Almode)
+  RetIA --> CanceladoManual
+  RetIA --> CanceladoExp
+
+  note right of RetIA
+    Ao aprovar, rejeitar ou substituir o
+    primeiro produto da mala, o backend
+    altera o status da mala para
+    "Em conferência da Mala" (4).
+  end note
+</pre
+      >
       <h3 id="-produto-da-mala">🧾 Produto da Mala</h3>
-      <div class="mermaid">
-        stateDiagram-v2 [*] --&gt; Criado Criado --&gt; Aprovado : API Aprovar
-        Criado --&gt; Rejeitado : API Rejeitar (motivo obrigatório) Criado
-        --&gt; Substituído: motivo obrigatório e vincula Produto Novo note right
-        of Aprovado Se este for o primeiro produto alterado e a mala estiver em
-        "Retornado pela IA" (3), backend muda a mala para "Em conferência" (4).
-        end note note right of Rejeitado Mesma regra acima para primeira ação.
-        end note note right of Substituído Mesma regra acima para primeira ação.
-        end note
-      </div>
+      <pre class="mermaid">
+stateDiagram-v2
+  [*] --> Criado
+
+  Criado --> Aprovado : API Aprovar
+  Criado --> Rejeitado : API Rejeitar (motivo obrigatório)
+  Criado --> Substituído: motivo obrigatório e vincula Produto Novo
+
+  note right of Aprovado
+    Se este for o primeiro produto alterado
+    e a mala estiver em "Retornado pela IA" (3),
+    backend muda a mala para "Em conferência" (4).
+  end note
+
+  note right of Rejeitado
+    Mesma regra acima para primeira ação.
+  end note
+
+  note right of Substituído
+    Mesma regra acima para primeira ação.
+  end note
+</pre
+      >
       <hr />
       <h2 id="-websocket-de-integração-com-a-ia-eventos">
         🔌 WebSocket de Integração com a IA (Eventos)
@@ -1277,14 +1303,19 @@
 </code></pre>
       <hr />
       <h2 id="-fluxo-resumido-sequência">🔁 Fluxo resumido (sequência)</h2>
-      <div class="mermaid">
-        sequenceDiagram participant S as Servidor participant IA as Cliente IA
-        IA-&gt;&gt;S: Handshake (Authorization: Bearer &lt;token&gt;)
-        S--&gt;&gt;IA: Conexão aceita S--&gt;&gt;IA: server.malas.pendentes {
-        malas: [...] } IA--&gt;&gt;S: ia.mala.registrar { uuid, cliente,
-        vendedor, loja, produtos[] } S--&gt;&gt;IA: server.mala.registrada {
-        uuid, status: 3, totalProdutos, ok: true }
-      </div>
+      <pre class="mermaid">
+sequenceDiagram
+  participant S as Servidor
+  participant IA as Cliente IA
+
+  IA->>S: Handshake (Authorization: Bearer token)
+  S-->>IA: Conexão aceita
+
+  S-->>IA: server.malas.pendentes { malas: [...] }
+  IA-->>S: ia.mala.registrar { uuid, cliente, vendedor, loja, produtos[] }
+  S-->>IA: server.mala.registrada { uuid, status: 3, totalProdutos, ok: true }
+</pre
+      >
       <hr />
       <h2 id="-boas-práticas">✅ Boas práticas</h2>
       <ul>
