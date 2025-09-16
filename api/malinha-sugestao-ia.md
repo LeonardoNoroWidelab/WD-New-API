@@ -144,10 +144,17 @@ stateDiagram-v2
 
   Criado --> ProcIA : submit à IA
   ProcIA --> RetIA : IA devolve produtos
-  RetIA --> ConfMala : vendedor inicia conferência
+  RetIA --> ConfMala : 1ª ação de produto (aprovar/rejeitar/substituir)
   ConfMala --> Finalizado : gerar Pré-Venda (Almode)
   RetIA --> CanceladoManual
   RetIA --> CanceladoExp
+
+  note right of RetIA
+    Ao aprovar, rejeitar ou substituir o
+    primeiro produto da mala, o backend
+    altera o status da mala para
+    "Em conferência da Mala" (4).
+  end note
 ```
 
 ### 🧾 Produto da Mala
@@ -155,9 +162,26 @@ stateDiagram-v2
 ```mermaid
 stateDiagram-v2
   [*] --> Criado
-  Criado --> Aprovado
-  Criado --> Rejeitado: motivo obrigatório
+
+  state "Substituído" as Substituido
+
+  Criado --> Aprovado : API Aprovar
+  Criado --> Rejeitado : API Rejeitar (motivo obrigatório)
   Criado --> Substituído: motivo obrigatório e vincula Produto Novo
+
+  note right of Aprovado
+    Se este for o primeiro produto alterado
+    e a mala estiver em "Retornado pela IA" (3),
+    backend muda a mala para "Em conferência" (4).
+  end note
+
+  note right of Rejeitado
+    Mesma regra acima para primeira ação.
+  end note
+
+  note right of Substituido
+    Mesma regra acima para primeira ação.
+  end note
 ```
 
 ---
@@ -388,6 +412,17 @@ sequenceDiagram
 
 ---
 
+### `POST` - Aprovar um produto
+
+`api/ia/mala/:idMala/produto/:idProduto/aprovar`
+
+**Comportamento**
+
+- Atualiza `status` do **produto** para **2 = Aprovado**.
+- **Se** a mala estiver com `status` **3 = Retornado pela IA**, muda para **4 = Em conferência da Mala** (primeira ação em produto).
+
+---
+
 ### `POST` - Rejeitar um produto
 
 `api/ia/mala/:idMala/produto/:idProduto/rejeitar`
@@ -405,6 +440,7 @@ sequenceDiagram
 
 - Atualiza `status` do **produto** para **3 = Rejeitado**.
 - Persistir `motivo_rejeicao` e, se selecionado, `id_motivo_rejeicao`.
+- **Se** a mala estiver com `status` **3 = Retornado pela IA**, muda para **4 = Em conferência da Mala** (primeira ação em produto).
 
 ---
 
@@ -432,6 +468,7 @@ sequenceDiagram
 - Marca o **produto original** como **4 = Substituído**.
 - Cria registro em **Produtos Novos** (status `2 = Substituto`) e vincula em `id_produto_novo`.
 - Persiste motivo (texto e/ou id).
+- **Se** a mala estiver com `status` **3 = Retornado pela IA**, muda para **4 = Em conferência da Mala** (primeira ação em produto).
 
 ---
 

@@ -5,19 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script src="
-https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js
-"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
     <link
-      href="
-https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css
-"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css"
       rel="stylesheet"
     />
 
-    <script src="
-https://cdn.jsdelivr.net/npm/mermaid@11.11.0/dist/mermaid.min.js
-"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11.11.0/dist/mermaid.min.js"></script>
 
     <style>
       code[class*='language-'],
@@ -1077,32 +1071,30 @@ https://cdn.jsdelivr.net/npm/mermaid@11.11.0/dist/mermaid.min.js
       <hr />
       <h2 id="estados-máquinas-de-estado">Estados (máquinas de estado)</h2>
       <h3 id="-mala-ia">🧳 Mala IA</h3>
-      <pre class="mermaid">
-stateDiagram-v2
-  [*] --> Criado
-
-  state "Em processamento pela IA" as ProcIA
-  state "Retornado pela IA" as RetIA
-  state "Em conferência da Mala" as ConfMala
-  state "Finalizado mala" as Finalizado
-  state "Cancelado mala manualmente" as CanceladoManual
-  state "Cancelado mala por tempo de expiração" as CanceladoExp
-
-  Criado --> ProcIA : submit à IA
-  ProcIA --> RetIA : IA devolve produtos
-  RetIA --> ConfMala : vendedor inicia conferência
-  ConfMala --> Finalizado : gerar Pré-Venda (Almode)
-  RetIA --> CanceladoManual
-  RetIA --> CanceladoExp
-      </pre>
+      <div class="mermaid">
+        stateDiagram-v2 [*] --&gt; Criado state "Em processamento pela IA" as
+        ProcIA state "Retornado pela IA" as RetIA state "Em conferência da Mala"
+        as ConfMala state "Finalizado mala" as Finalizado state "Cancelado mala
+        manualmente" as CanceladoManual state "Cancelado mala por tempo de
+        expiração" as CanceladoExp Criado --&gt; ProcIA : submit à IA ProcIA
+        --&gt; RetIA : IA devolve produtos RetIA --&gt; ConfMala : 1ª ação de
+        produto (aprovar/rejeitar/substituir) ConfMala --&gt; Finalizado : gerar
+        Pré-Venda (Almode) RetIA --&gt; CanceladoManual RetIA --&gt;
+        CanceladoExp note right of RetIA Ao aprovar, rejeitar ou substituir o
+        primeiro produto da mala, o backend altera o status da mala para "Em
+        conferência da Mala" (4). end note
+      </div>
       <h3 id="-produto-da-mala">🧾 Produto da Mala</h3>
-      <pre class="mermaid">
-        stateDiagram-v2
-          [*] --> Criado
-          Criado --> Aprovado
-          Criado --> Rejeitado: motivo obrigatório
-          Criado --> Substituído: motivo obrigatório e vincula Produto Novo
-      </pre>
+      <div class="mermaid">
+        stateDiagram-v2 [*] --&gt; Criado state "Substituído" as Substituido
+        Criado --&gt; Aprovado : API Aprovar Criado --&gt; Rejeitado : API
+        Rejeitar (motivo obrigatório) Criado --&gt; Substituído: motivo
+        obrigatório e vincula Produto Novo note right of Aprovado Se este for o
+        primeiro produto alterado e a mala estiver em "Retornado pela IA" (3),
+        backend muda a mala para "Em conferência" (4). end note note right of
+        Rejeitado Mesma regra acima para primeira ação. end note note right of
+        Substituido Mesma regra acima para primeira ação. end note
+      </div>
       <hr />
       <h2 id="-websocket-de-integração-com-a-ia-eventos">
         🔌 WebSocket de Integração com a IA (Eventos)
@@ -1285,18 +1277,14 @@ stateDiagram-v2
 </code></pre>
       <hr />
       <h2 id="-fluxo-resumido-sequência">🔁 Fluxo resumido (sequência)</h2>
-      <pre class="mermaid">
-sequenceDiagram
-  participant S as Servidor
-  participant IA as Cliente IA
-
-  IA->>S: Handshake (Authorization: Bearer token)
-  S-->>IA: Conexão aceita
-
-  S-->>IA: server.malas.pendentes { malas: [...] }
-  IA-->>S: ia.mala.registrar { uuid, cliente, vendedor, loja, produtos[] }
-  S-->>IA: server.mala.registrada { uuid, status: 3, totalProdutos, ok: true }
-      </pre>
+      <div class="mermaid">
+        sequenceDiagram participant S as Servidor participant IA as Cliente IA
+        IA-&gt;&gt;S: Handshake (Authorization: Bearer &lt;token&gt;)
+        S--&gt;&gt;IA: Conexão aceita S--&gt;&gt;IA: server.malas.pendentes {
+        malas: [...] } IA--&gt;&gt;S: ia.mala.registrar { uuid, cliente,
+        vendedor, loja, produtos[] } S--&gt;&gt;IA: server.mala.registrada {
+        uuid, status: 3, totalProdutos, ok: true }
+      </div>
       <hr />
       <h2 id="-boas-práticas">✅ Boas práticas</h2>
       <ul>
@@ -1394,6 +1382,24 @@ sequenceDiagram
         <li><code>app_id</code> e <code>ativo</code>.</li>
       </ul>
       <hr />
+      <h3 id="post---aprovar-um-produto">
+        <code>POST</code> - Aprovar um produto
+      </h3>
+      <p><code>api/ia/mala/:idMala/produto/:idProduto/aprovar</code></p>
+      <p><strong>Comportamento</strong></p>
+      <ul>
+        <li>
+          Atualiza <code>status</code> do <strong>produto</strong> para
+          <strong>2 = Aprovado</strong>.
+        </li>
+        <li>
+          <strong>Se</strong> a mala estiver com <code>status</code>
+          <strong>3 = Retornado pela IA</strong>, muda para
+          <strong>4 = Em conferência da Mala</strong> (primeira ação em
+          produto).
+        </li>
+      </ul>
+      <hr />
       <h3 id="post---rejeitar-um-produto">
         <code>POST</code> - Rejeitar um produto
       </h3>
@@ -1417,6 +1423,12 @@ sequenceDiagram
         <li>
           Persistir <code>motivo_rejeicao</code> e, se selecionado,
           <code>id_motivo_rejeicao</code>.
+        </li>
+        <li>
+          <strong>Se</strong> a mala estiver com <code>status</code>
+          <strong>3 = Retornado pela IA</strong>, muda para
+          <strong>4 = Em conferência da Mala</strong> (primeira ação em
+          produto).
         </li>
       </ul>
       <hr />
@@ -1452,6 +1464,12 @@ sequenceDiagram
           <code>id_produto_novo</code>.
         </li>
         <li>Persiste motivo (texto e/ou id).</li>
+        <li>
+          <strong>Se</strong> a mala estiver com <code>status</code>
+          <strong>3 = Retornado pela IA</strong>, muda para
+          <strong>4 = Em conferência da Mala</strong> (primeira ação em
+          produto).
+        </li>
       </ul>
       <hr />
       <h3 id="post---cadastrar-um-produto-novo">
