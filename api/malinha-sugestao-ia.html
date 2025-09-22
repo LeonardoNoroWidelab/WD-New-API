@@ -1007,15 +1007,6 @@
           <p><code>ean</code>: <code>string</code></p>
         </li>
         <li>
-          <p><code>status</code>: <strong>Enum</strong></p>
-          <ul>
-            <li><code>1</code> = Criado</li>
-            <li><code>2</code> = Aprovado</li>
-            <li><code>3</code> = Rejeitado</li>
-            <li><code>4</code> = Substituído</li>
-          </ul>
-        </li>
-        <li>
           <p>
             <code>motivo_rejeicao</code>: <code>string</code>
             <em>(nullable)</em>
@@ -1032,6 +1023,18 @@
             <code>id_produto_novo</code>: <code>number</code>
             <em>(nullable, FK → Produtos Novos)</em>
           </p>
+        </li>
+        <li>
+          <p><code>nome</code>: <code>string</code></p>
+        </li>
+        <li>
+          <p><code>status</code>: <strong>Enum</strong></p>
+          <ul>
+            <li><code>1</code> = Criado</li>
+            <li><code>2</code> = Aprovado</li>
+            <li><code>3</code> = Rejeitado</li>
+            <li><code>4</code> = Substituído</li>
+          </ul>
         </li>
       </ul>
       <h4 id="-produtos-novos">🆕 Produtos novos</h4>
@@ -1052,6 +1055,9 @@
         </li>
         <li>
           <p><code>ean</code>: <code>string</code></p>
+        </li>
+        <li>
+          <p><code>nome</code>: <code>string</code></p>
         </li>
         <li>
           <p><code>status</code>: <strong>Enum</strong></p>
@@ -1095,8 +1101,7 @@ stateDiagram-v2
     altera o status da mala para
     "Em conferência da Mala" (4).
   end note
-</pre
-      >
+      </pre>
       <h3 id="-produto-da-mala">🧾 Produto da Mala</h3>
       <pre class="mermaid">
 stateDiagram-v2
@@ -1119,8 +1124,7 @@ stateDiagram-v2
   note right of Substituído
     Mesma regra acima para primeira ação.
   end note
-</pre
-      >
+      </pre>
       <hr />
       <h2 id="-websocket-de-integração-com-a-ia-eventos">
         🔌 WebSocket de Integração com a IA (Eventos)
@@ -1314,8 +1318,7 @@ sequenceDiagram
   S-->>IA: server.malas.pendentes { malas: [...] }
   IA-->>S: ia.mala.registrar { uuid, cliente, vendedor, loja, produtos[] }
   S-->>IA: server.mala.registrada { uuid, status: 3, totalProdutos, ok: true }
-</pre
-      >
+      </pre>
       <hr />
       <h2 id="-boas-práticas">✅ Boas práticas</h2>
       <ul>

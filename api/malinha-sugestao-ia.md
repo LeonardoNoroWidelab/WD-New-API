@@ -98,16 +98,16 @@
 - `cor`: `string`
 - `tamanho`: `string` _(nullable)_
 - `ean`: `string`
+- `motivo_rejeicao`: `string` _(nullable)_
+- `id_motivo_rejeicao`: `number` _(nullable, FK → Motivos Rejeição)_
+- `id_produto_novo`: `number` _(nullable, FK → Produtos Novos)_
+- `nome`: `string`
 - `status`: **Enum**
 
   - `1` = Criado
   - `2` = Aprovado
   - `3` = Rejeitado
   - `4` = Substituído
-
-- `motivo_rejeicao`: `string` _(nullable)_
-- `id_motivo_rejeicao`: `number` _(nullable, FK → Motivos Rejeição)_
-- `id_produto_novo`: `number` _(nullable, FK → Produtos Novos)_
 
 #### 🆕 Produtos novos
 
@@ -116,6 +116,7 @@
 - `cor`: `string`
 - `tamanho`: `string` _(nullable)_
 - `ean`: `string`
+- `nome`: `string`
 - `status`: **Enum**
 
   - `1` = Novo
