@@ -102,6 +102,7 @@
 - `id_motivo_rejeicao`: `number` _(nullable, FK → Motivos Rejeição)_
 - `id_produto_novo`: `number` _(nullable, FK → Produtos Novos)_
 - `nome`: `string`
+- `urlImagem`: `string`
 - `status`: **Enum**
 
   - `1` = Criado
@@ -117,6 +118,7 @@
 - `tamanho`: `string` _(nullable)_
 - `ean`: `string`
 - `nome`: `string`
+- `urlImagem`: `string`
 - `status`: **Enum**
 
   - `1` = Novo
