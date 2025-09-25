@@ -1076,8 +1076,18 @@
       <h4 id="️-configuracoes">⚙️ Configuracoes</h4>
       <ul>
         <li>
-          <code>dias_validade_mala</code>: <code>number</code>
-          <em>(opcional, em dias)</em>
+          <p><code>descricao</code>: <code>string</code></p>
+        </li>
+        <li>
+          <p><code>tipo</code>: <strong>Enum</strong></p>
+          <ul>
+            <li><code>1</code> = String</li>
+            <li><code>2</code> = Number</li>
+            <li><code>3</code> = Boolean</li>
+          </ul>
+        </li>
+        <li>
+          <p><code>valor</code>: <code>string</code></p>
         </li>
       </ul>
       <hr />
@@ -1408,6 +1418,20 @@ sequenceDiagram
       <ul>
         <li>
           Busca por <code>id</code> e
+          <strong>retorna os produtos juntos</strong> (Produtos Malas IA e,
+          quando houver, vínculo com Produtos Novos).
+        </li>
+      </ul>
+      <hr />
+      <hr />
+      <h3 id="get---buscar-detalhes-da-mala-por-id-da-almode">
+        <code>GET</code> - Buscar detalhes da mala por id da Almode
+      </h3>
+      <p><code>api/ia/malaIdAlmode/:idAlmode</code></p>
+      <p><strong>Comportamento</strong></p>
+      <ul>
+        <li>
+          Busca por <code>idAlmode</code> e
           <strong>retorna os produtos juntos</strong> (Produtos Malas IA e,
           quando houver, vínculo com Produtos Novos).
         </li>

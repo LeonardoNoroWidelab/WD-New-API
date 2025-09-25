@@ -126,7 +126,14 @@
 
 #### ⚙️ Configuracoes
 
-- `dias_validade_mala`: `number` _(opcional, em dias)_
+- `descricao`: `string`
+- `tipo`: **Enum**
+
+  - `1` = String
+  - `2` = Number
+  - `3` = Boolean
+
+- `valor`: `string`
 
 ---
 
@@ -400,6 +407,18 @@ sequenceDiagram
 **Comportamento**
 
 - Busca por `id` e **retorna os produtos juntos** (Produtos Malas IA e, quando houver, vínculo com Produtos Novos).
+
+---
+
+---
+
+### `GET` - Buscar detalhes da mala por id da Almode
+
+`api/ia/malaIdAlmode/:idAlmode`
+
+**Comportamento**
+
+- Busca por `idAlmode` e **retorna os produtos juntos** (Produtos Malas IA e, quando houver, vínculo com Produtos Novos).
 
 ---
 
