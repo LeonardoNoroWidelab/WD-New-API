@@ -44,7 +44,7 @@ type RequestBody = {
 
 ```json
 {
-  "appid": "colcci",
+  "appId": "colcci",
   "userId": "colcci-cristiano.bortolini@widelab.com.br",
   "cpf": "12345678912",
   "cnpj": "98765432000156",
@@ -62,7 +62,7 @@ type RequestBody = {
 
 ```json
 {
-  "appid": "colcci",
+  "appId": "colcci",
   "userId": "colcci-cristiano.bortolini@widelab.com.br",
   "cpf": "12345678912",
   "cnpj": "98765432000156",
@@ -80,7 +80,7 @@ type RequestBody = {
 
 ```json
 {
-  "appid": "colcci",
+  "appId": "colcci",
   "userId": "colcci-cristiano.bortolini@widelab.com.br",
   "cpf": "12345678912",
   "cnpj": "98765432000156",
@@ -98,7 +98,7 @@ type RequestBody = {
 
 ```json
 {
-  "appid": "colcci",
+  "appId": "colcci",
   "userId": "colcci-cristiano.bortolini@widelab.com.br",
   "cpf": "12345678912",
   "cnpj": "98765432000156",
@@ -116,7 +116,7 @@ type RequestBody = {
 
 ```json
 {
-  "appid": "colcci",
+  "appId": "colcci",
   "userId": "colcci-cristiano.bortolini@widelab.com.br",
   "cpf": "12345678912",
   "cnpj": "98765432000156",
@@ -134,7 +134,7 @@ type RequestBody = {
 
 ```json
 {
-  "appid": "colcci",
+  "appId": "colcci",
   "userId": "colcci-cristiano.bortolini@widelab.com.br",
   "cpf": "12345678912",
   "cnpj": "98765432000156",
@@ -152,7 +152,7 @@ type RequestBody = {
 
 ```json
 {
-  "appid": "colcci",
+  "appId": "colcci",
   "userId": "colcci-cristiano.bortolini@widelab.com.br",
   "cpf": "12345678912",
   "cnpj": "98765432000156",
@@ -160,7 +160,6 @@ type RequestBody = {
   "tipo": "Pesquisa",
   "descricao": "Natal 2025", // Quando o usuário pesquisar alguma coisa
   "plataforma": "Mobile",
-  "descricao": null,
   "tempoAtual": null,
   "percentual": null,
   "id": null
@@ -171,7 +170,7 @@ type RequestBody = {
 
 ```json
 {
-  "appid": "colcci",
+  "appId": "colcci",
   "userId": "colcci-cristiano.bortolini@widelab.com.br",
   "cpf": "12345678912",
   "cnpj": "98765432000156",
@@ -189,7 +188,7 @@ type RequestBody = {
 
 ```json
 {
-  "appid": "colcci",
+  "appId": "colcci",
   "userId": "colcci-cristiano.bortolini@widelab.com.br",
   "cpf": "12345678912",
   "cnpj": "98765432000156",
