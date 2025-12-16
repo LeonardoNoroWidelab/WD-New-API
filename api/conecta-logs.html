@@ -818,199 +818,306 @@
   </head>
   <body for="html-export">
     <div class="crossnote markdown-preview">
-      <h2 id="conecta---logs">Conecta - Logs</h2>
-      <h3 id="post---registrar-log"><code>POST</code> - Registrar LOG</h3>
+      <h1 id="-conecta--implementação-de-logs--ajuste-de-filtros">
+        🎓 Conecta — Implementação de Logs + Ajuste de filtros
+      </h1>
       <p>
-        <code
-          >/log?idform=39&amp;userid=colcci-cristiano.bortolini%40widelab.com.br&amp;appid=colcci</code
-        >
+        <strong>Objetivo:</strong> Implementar um sistema de
+        <strong>Logs de uso</strong> no app Conecta e ajustar a APIs de
+        <strong>Provas</strong> e <strong>Progressos</strong> para suportar
+        filtros obrigatórios e/ou opcionais, reduzindo retorno desnecessário e
+        melhorando performance
       </p>
+      <h3 id="post---registrar-log"><code>POST</code> - Registrar LOG</h3>
+      <h4 id="-finalidade">📌 Finalidade</h4>
+      <p>
+        Registrar eventos importantes de uso do app (acesso a conteúdos,
+        abertura do app, pesquisa, filtro, expansão de módulo, etc).
+      </p>
+      <h4 id="️-endpoint">🛣️ Endpoint</h4>
+      <p><code>POST</code> <code>/log</code></p>
       <pre
         data-role="codeBlock"
-        data-info="typescript"
-        class="language-typescript typescript"
+        data-info="ts"
+        class="language-ts ts"
       ><code><span class="token keyword keyword-type">type</span> <span class="token class-name">RequestBody</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
-  userId<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
-  cpf<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
-  cnpj<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
-  tipo<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
-  descricao<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
-  id<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token operator">|</span> <span class="token keyword keyword-null">null</span><span class="token punctuation">;</span>
+  appId<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: "colcci"</span>
+  userId<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: "colcci-cristiano.bortolini@widelab.com.br"</span>
+  cpf<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: "12345678912"</span>
+  cnpj<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: "98765432000156"</span>
+  acao<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: "Acesso" | "Pesquisa" | "Filtro" | ...</span>
+  tipo<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: "App" | "Treinamento"</span>
+  id<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token operator">|</span> <span class="token keyword keyword-null">null</span><span class="token punctuation">;</span> <span class="token comment">// ID do objeto relacionado (conteúdo, treinamento, módulo, questionário...) ou null</span>
+  plataforma<span class="token operator">:</span> <span class="token string">'WEB'</span> <span class="token operator">|</span> <span class="token string">'Mobile'</span><span class="token punctuation">;</span>
+  descricao<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token keyword keyword-null">null</span><span class="token punctuation">;</span> <span class="token comment">// Ex: "Natal 2025" ...</span>
+  tempoAtual<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token operator">|</span> <span class="token keyword keyword-null">null</span><span class="token punctuation">;</span>
+  percentual<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token operator">|</span> <span class="token keyword keyword-null">null</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
-      <p><strong>Body</strong></p>
+      <hr />
+      <h4 id="-idempotência--duplicidade">📌 Idempotência / duplicidade</h4>
+      <ul>
+        <li>
+          Não é necessário deduplicar por padrão (o mesmo usuário pode gerar
+          logs repetidos).
+        </li>
+      </ul>
+      <hr />
+      <h3 id="-tipos-de-logs-esperados-exemplos">
+        📌 Tipos de logs esperados (exemplos)
+      </h3>
+      <blockquote>
+        <p>
+          A lista abaixo ajuda a padronizar o uso. O back-end não precisa
+          “conhecer” cada tipo, mas deve aceitar <code>acao/tipo</code> como
+          strings e salvar exatamente como recebido.
+        </p>
+      </blockquote>
+      <ul>
+        <li><strong>Ao acessar um conteúdo "solto"</strong></li>
+      </ul>
       <pre
         data-role="codeBlock"
         data-info="json"
         class="language-json json"
       ><code><span class="token punctuation">{</span>
+  <span class="token property">"appid"</span><span class="token operator">:</span> <span class="token string">"colcci"</span><span class="token punctuation">,</span>
   <span class="token property">"userId"</span><span class="token operator">:</span> <span class="token string">"colcci-cristiano.bortolini@widelab.com.br"</span><span class="token punctuation">,</span>
   <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"12345678912"</span><span class="token punctuation">,</span>
   <span class="token property">"cnpj"</span><span class="token operator">:</span> <span class="token string">"98765432000156"</span><span class="token punctuation">,</span>
-  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
-  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token string">"Conteúdo"</span><span class="token punctuation">,</span>
+  <span class="token property">"acao"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
+  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Conteúdo"</span><span class="token punctuation">,</span>
+  <span class="token property">"plataforma"</span><span class="token operator">:</span> <span class="token string">"WEB"</span><span class="token punctuation">,</span>
+  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"tempoAtual"</span><span class="token operator">:</span> <span class="token number">120</span><span class="token punctuation">,</span>
+  <span class="token property">"percentual"</span><span class="token operator">:</span> <span class="token number">30</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">1</span>
 <span class="token punctuation">}</span>
 </code></pre>
-      <h4 id="exemplos-de-logs-possíveis">Exemplos de LOGs possíveis</h4>
-      <blockquote>
-        <p>Ao acessar um conteúdo "solto"</p>
-      </blockquote>
+      <ul>
+        <li><strong>Ao acessar um treinamento</strong></li>
+      </ul>
       <pre
         data-role="codeBlock"
         data-info="json"
         class="language-json json"
       ><code><span class="token punctuation">{</span>
+  <span class="token property">"appid"</span><span class="token operator">:</span> <span class="token string">"colcci"</span><span class="token punctuation">,</span>
   <span class="token property">"userId"</span><span class="token operator">:</span> <span class="token string">"colcci-cristiano.bortolini@widelab.com.br"</span><span class="token punctuation">,</span>
   <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"12345678912"</span><span class="token punctuation">,</span>
   <span class="token property">"cnpj"</span><span class="token operator">:</span> <span class="token string">"98765432000156"</span><span class="token punctuation">,</span>
-  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
-  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token string">"Conteúdo"</span><span class="token punctuation">,</span>
-  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">1</span>
-<span class="token punctuation">}</span>
-</code></pre>
-      <blockquote>
-        <p>Ao acessar um treinamento</p>
-      </blockquote>
-      <pre
-        data-role="codeBlock"
-        data-info="json"
-        class="language-json json"
-      ><code><span class="token punctuation">{</span>
-  <span class="token property">"userId"</span><span class="token operator">:</span> <span class="token string">"colcci-cristiano.bortolini@widelab.com.br"</span><span class="token punctuation">,</span>
-  <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"12345678912"</span><span class="token punctuation">,</span>
-  <span class="token property">"cnpj"</span><span class="token operator">:</span> <span class="token string">"98765432000156"</span><span class="token punctuation">,</span>
-  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
-  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token string">"Treinamento"</span><span class="token punctuation">,</span>
+  <span class="token property">"acao"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
+  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Treinamento"</span><span class="token punctuation">,</span>
+  <span class="token property">"plataforma"</span><span class="token operator">:</span> <span class="token string">"Mobile"</span><span class="token punctuation">,</span>
+  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"tempoAtual"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"percentual"</span><span class="token operator">:</span> <span class="token number">45</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">2</span>
 <span class="token punctuation">}</span>
 </code></pre>
-      <blockquote>
-        <p>Ao acessar um conteúdo de um treinamento</p>
-      </blockquote>
+      <ul>
+        <li><strong>Ao acessar um conteúdo de um treinamento</strong></li>
+      </ul>
       <pre
         data-role="codeBlock"
         data-info="json"
         class="language-json json"
       ><code><span class="token punctuation">{</span>
+  <span class="token property">"appid"</span><span class="token operator">:</span> <span class="token string">"colcci"</span><span class="token punctuation">,</span>
   <span class="token property">"userId"</span><span class="token operator">:</span> <span class="token string">"colcci-cristiano.bortolini@widelab.com.br"</span><span class="token punctuation">,</span>
   <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"12345678912"</span><span class="token punctuation">,</span>
   <span class="token property">"cnpj"</span><span class="token operator">:</span> <span class="token string">"98765432000156"</span><span class="token punctuation">,</span>
-  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
-  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token string">"Conteúdo do treinamento"</span><span class="token punctuation">,</span>
+  <span class="token property">"acao"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
+  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Conteúdo do treinamento"</span><span class="token punctuation">,</span>
+  <span class="token property">"plataforma"</span><span class="token operator">:</span> <span class="token string">"Mobile"</span><span class="token punctuation">,</span>
+  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"tempoAtual"</span><span class="token operator">:</span> <span class="token number">120</span><span class="token punctuation">,</span>
+  <span class="token property">"percentual"</span><span class="token operator">:</span> <span class="token number">30</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">3</span>
 <span class="token punctuation">}</span>
 </code></pre>
-      <blockquote>
-        <p>Ao acessar o app</p>
-      </blockquote>
+      <ul>
+        <li><strong>Ao acessar o app</strong></li>
+      </ul>
       <pre
         data-role="codeBlock"
         data-info="json"
         class="language-json json"
       ><code><span class="token punctuation">{</span>
+  <span class="token property">"appid"</span><span class="token operator">:</span> <span class="token string">"colcci"</span><span class="token punctuation">,</span>
   <span class="token property">"userId"</span><span class="token operator">:</span> <span class="token string">"colcci-cristiano.bortolini@widelab.com.br"</span><span class="token punctuation">,</span>
   <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"12345678912"</span><span class="token punctuation">,</span>
   <span class="token property">"cnpj"</span><span class="token operator">:</span> <span class="token string">"98765432000156"</span><span class="token punctuation">,</span>
-  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
-  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token string">"App"</span><span class="token punctuation">,</span>
+  <span class="token property">"acao"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
+  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"App"</span><span class="token punctuation">,</span>
+  <span class="token property">"plataforma"</span><span class="token operator">:</span> <span class="token string">"Mobile"</span><span class="token punctuation">,</span>
+  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"tempoAtual"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"percentual"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token null keyword">null</span>
 <span class="token punctuation">}</span>
 </code></pre>
-      <blockquote>
-        <p>Ao acessar/expandir um módulo de um treinamento</p>
-      </blockquote>
+      <ul>
+        <li>
+          <strong>Ao acessar/expandir um módulo de um treinamento</strong>
+        </li>
+      </ul>
       <pre
         data-role="codeBlock"
         data-info="json"
         class="language-json json"
       ><code><span class="token punctuation">{</span>
+  <span class="token property">"appid"</span><span class="token operator">:</span> <span class="token string">"colcci"</span><span class="token punctuation">,</span>
   <span class="token property">"userId"</span><span class="token operator">:</span> <span class="token string">"colcci-cristiano.bortolini@widelab.com.br"</span><span class="token punctuation">,</span>
   <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"12345678912"</span><span class="token punctuation">,</span>
   <span class="token property">"cnpj"</span><span class="token operator">:</span> <span class="token string">"98765432000156"</span><span class="token punctuation">,</span>
-  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
-  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token string">"Módulo do treinamento"</span><span class="token punctuation">,</span>
+  <span class="token property">"acao"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
+  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Módulo do treinamento"</span><span class="token punctuation">,</span>
+  <span class="token property">"plataforma"</span><span class="token operator">:</span> <span class="token string">"Mobile"</span><span class="token punctuation">,</span>
+  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"tempoAtual"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"percentual"</span><span class="token operator">:</span> <span class="token number">54</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">4</span>
 <span class="token punctuation">}</span>
 </code></pre>
-      <blockquote>
-        <p>Ao selecionar um categoria para filtrar a busca</p>
-      </blockquote>
+      <ul>
+        <li>
+          <strong>Ao selecionar um categoria para filtrar a busca</strong>
+        </li>
+      </ul>
       <pre
         data-role="codeBlock"
         data-info="json"
         class="language-json json"
       ><code><span class="token punctuation">{</span>
+  <span class="token property">"appid"</span><span class="token operator">:</span> <span class="token string">"colcci"</span><span class="token punctuation">,</span>
   <span class="token property">"userId"</span><span class="token operator">:</span> <span class="token string">"colcci-cristiano.bortolini@widelab.com.br"</span><span class="token punctuation">,</span>
   <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"12345678912"</span><span class="token punctuation">,</span>
   <span class="token property">"cnpj"</span><span class="token operator">:</span> <span class="token string">"98765432000156"</span><span class="token punctuation">,</span>
-  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Filtro"</span><span class="token punctuation">,</span>
-  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token string">"Categoria"</span><span class="token punctuation">,</span>
+  <span class="token property">"acao"</span><span class="token operator">:</span> <span class="token string">"Filtro"</span><span class="token punctuation">,</span>
+  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Categoria"</span><span class="token punctuation">,</span>
+  <span class="token property">"plataforma"</span><span class="token operator">:</span> <span class="token string">"Mobile"</span><span class="token punctuation">,</span>
+  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"tempoAtual"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"percentual"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">5</span>
 <span class="token punctuation">}</span>
 </code></pre>
-      <blockquote>
-        <p>Ao realizar uma pesquisa na caixa de pesquisa</p>
-      </blockquote>
+      <ul>
+        <li><strong>Ao realizar uma pesquisa na caixa de pesquisa</strong></li>
+      </ul>
       <pre
         data-role="codeBlock"
         data-info="json"
         class="language-json json"
       ><code><span class="token punctuation">{</span>
+  <span class="token property">"appid"</span><span class="token operator">:</span> <span class="token string">"colcci"</span><span class="token punctuation">,</span>
   <span class="token property">"userId"</span><span class="token operator">:</span> <span class="token string">"colcci-cristiano.bortolini@widelab.com.br"</span><span class="token punctuation">,</span>
   <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"12345678912"</span><span class="token punctuation">,</span>
   <span class="token property">"cnpj"</span><span class="token operator">:</span> <span class="token string">"98765432000156"</span><span class="token punctuation">,</span>
+  <span class="token property">"acao"</span><span class="token operator">:</span> <span class="token string">"Pesquisa"</span><span class="token punctuation">,</span>
   <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Pesquisa"</span><span class="token punctuation">,</span>
   <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token string">"Natal 2025"</span><span class="token punctuation">,</span> <span class="token comment">// Quando o usuário pesquisar alguma coisa</span>
+  <span class="token property">"plataforma"</span><span class="token operator">:</span> <span class="token string">"Mobile"</span><span class="token punctuation">,</span>
+  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"tempoAtual"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"percentual"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token null keyword">null</span>
 <span class="token punctuation">}</span>
 </code></pre>
-      <blockquote>
-        <p>
-          Ao marcar um conteúdo de um treinamento como completado (checkbox)
-        </p>
-      </blockquote>
+      <ul>
+        <li>
+          <strong
+            >Ao marcar um conteúdo de um treinamento como completado
+            (checkbox)</strong
+          >
+        </li>
+      </ul>
       <pre
         data-role="codeBlock"
         data-info="json"
         class="language-json json"
       ><code><span class="token punctuation">{</span>
+  <span class="token property">"appid"</span><span class="token operator">:</span> <span class="token string">"colcci"</span><span class="token punctuation">,</span>
   <span class="token property">"userId"</span><span class="token operator">:</span> <span class="token string">"colcci-cristiano.bortolini@widelab.com.br"</span><span class="token punctuation">,</span>
   <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"12345678912"</span><span class="token punctuation">,</span>
   <span class="token property">"cnpj"</span><span class="token operator">:</span> <span class="token string">"98765432000156"</span><span class="token punctuation">,</span>
-  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Marcado como completado"</span><span class="token punctuation">,</span>
-  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token string">"Conteúdo de treinamento"</span><span class="token punctuation">,</span>
+  <span class="token property">"acao"</span><span class="token operator">:</span> <span class="token string">"Marcado como completado"</span><span class="token punctuation">,</span>
+  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Conteúdo de treinamento"</span><span class="token punctuation">,</span>
+  <span class="token property">"plataforma"</span><span class="token operator">:</span> <span class="token string">"Mobile"</span><span class="token punctuation">,</span>
+  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"tempoAtual"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"percentual"</span><span class="token operator">:</span> <span class="token number">38</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">6</span>
 <span class="token punctuation">}</span>
 </code></pre>
-      <blockquote>
-        <p>Ao acessar um questionário para começar a respondê-lo</p>
-      </blockquote>
+      <ul>
+        <li>
+          <strong>Ao acessar um questionário para começar a respondê-lo</strong>
+        </li>
+      </ul>
       <pre
         data-role="codeBlock"
         data-info="json"
         class="language-json json"
       ><code><span class="token punctuation">{</span>
+  <span class="token property">"appid"</span><span class="token operator">:</span> <span class="token string">"colcci"</span><span class="token punctuation">,</span>
   <span class="token property">"userId"</span><span class="token operator">:</span> <span class="token string">"colcci-cristiano.bortolini@widelab.com.br"</span><span class="token punctuation">,</span>
   <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"12345678912"</span><span class="token punctuation">,</span>
   <span class="token property">"cnpj"</span><span class="token operator">:</span> <span class="token string">"98765432000156"</span><span class="token punctuation">,</span>
-  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
-  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token string">"Questionário"</span><span class="token punctuation">,</span>
+  <span class="token property">"acao"</span><span class="token operator">:</span> <span class="token string">"Acesso"</span><span class="token punctuation">,</span>
+  <span class="token property">"tipo"</span><span class="token operator">:</span> <span class="token string">"Questionário"</span><span class="token punctuation">,</span>
+  <span class="token property">"plataforma"</span><span class="token operator">:</span> <span class="token string">"Mobile"</span><span class="token punctuation">,</span>
+  <span class="token property">"descricao"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"tempoAtual"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"percentual"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">7</span>
 <span class="token punctuation">}</span>
 </code></pre>
       <hr />
+      <h2 id="-novos-filtros-nas-apis-existentes">
+        ✅ Novos filtros nas APIs existentes
+      </h2>
       <h3 id="get---busca-de-respostas-do-usuário">
         <code>GET</code> - Busca de respostas do usuário
       </h3>
+      <h4 id="-finalidade-1">📌 Finalidade</h4>
       <p>
+        O front precisa <strong>filtrar</strong> o retorno para trazer apenas as
+        respostas relevantes, evitando cargas desnecessárias.
+      </p>
+      <h4 id="️-endpoint-1">🛣️ Endpoint</h4>
+      <p><code>GET</code> <code>/provas</code></p>
+      <h4 id="-query-params-filtros">🔎 Query Params (filtros)</h4>
+      <ul>
+        <li><code>idform</code> → <strong>ID do questionário</strong></li>
+        <li><code>userid</code> → <strong>ID do usuário</strong></li>
+        <li><code>appid</code> → <strong>ID da marca/app</strong></li>
+      </ul>
+      <p>
+        ✅ Exemplo:<br />
         <code
           >/provas?idform=39&amp;userid=colcci-cristiano.bortolini%40widelab.com.br&amp;appid=colcci</code
         >
       </p>
+      <hr />
+      <h3 id="get---busca-de-progresso-por-marca-e-usuário-ou-conteúdo">
+        <code>GET</code> - Busca de progresso por marca e usuário ou conteúdo
+      </h3>
+      <h4 id="️-endpoint-2">🛣️ Endpoint</h4>
+      <p><code>GET</code> <code>/progressos</code></p>
+      <h4 id="-query-params-filtros-1">🔎 Query Params (filtros)</h4>
       <ul>
-        <li>Incluir filtros por ID de questionário (idform), userId e appId</li>
+        <li><code>userid</code> → <strong>ID do usuário</strong></li>
+        <li><code>appid</code> → <strong>ID da marca/app</strong></li>
+        <li><code>idconteudo</code> → <strong>ID do conteúdo</strong></li>
       </ul>
+      <p>
+        ✅ Exemplo:<br />
+        <code
+          >/progressos?userid=colcci-cristiano.bortolini%40widelab.com.br&amp;appid=colcci&amp;idconteudo=178</code
+        >
+      </p>
     </div>
   </body>
 </html>
