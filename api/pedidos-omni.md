@@ -99,12 +99,12 @@ type RequestBody = {
   "data": [
     {
       "appId": "colcci",
-      "cnpjLoja": "28288730000159",
-      "codPedido": "46000102793-F1",
-      "dataHoraEmissao": "2025-12-04 22:45:36",
-      "nomeCliente": "Nathalia Braga",
+      "cnpjLoja": "123887830000159",
+      "codPedido": "456000801123-F1",
+      "dataHoraEmissao": "2025-12-15 20:45:36",
+      "nomeCliente": "João da Silva",
       "cpfCliente": "12345678956",
-      "codCliente": 2345,
+      "codCliente": 5412,
       "nomeLoja": "FORUM | BRASILIA | PARK SHP | FRANQUIA  ",
       "status": "DELIVERED",
       "valorPedido": 650.27,
@@ -127,21 +127,49 @@ type RequestBody = {
 }
 ```
 
-#### Relação dos campos e tabelas
+## 🧩 Mapeamento de campos (origem dos dados)
 
-**Capa do Pedido**
+### 🧾 Capa do Pedido (estrutura principal do retorno)
 
-- **appId**: Asco_Eco_Core.Pedido.channelId
-- **cnpjLoja**: Asco_Eco_Core_Model.Entrega.cnpjLocation
-- **codPedido**: Asco_Eco_Core.Pedido.pedidoCliente
-- **dataHoraEmissao**: asco_Eco_Core_Model.Pedido.dataEmissao
-- **nomeCliente**: Asco_Eco_Core.Cliente.nomeCompleto
-- **cpfCliente**: Asco_Eco_Core_Model.Pedido.cpfCliente
-- **codCliente**: Asco_Eco_Core.Pedido.codCliente
-- **nomeLoja**: Asco_Eco_Core_Model.Entrega.location
-- **status**: Asco_Eco_Core_Model.Entrega.status
-- **valorPedido**: Asco_Eco_Core.Pedido.DadosPagamento
+| Campo no retorno  | Origem (classe/tabela)        | Campo/coluna     |
+| ----------------- | ----------------------------- | ---------------- |
+| `appId`           | `Asco_Eco_Core.Pedido`        | `channelId`      |
+| `cnpjLoja`        | `Asco_Eco_Core_Model.Entrega` | `cnpjLocation`   |
+| `codPedido`       | `Asco_Eco_Core.Pedido`        | `pedidoCliente`  |
+| `dataHoraEmissao` | `Asco_Eco_Core_Model.Pedido`  | `dataEmissao`    |
+| `nomeCliente`     | `Asco_Eco_Core.Cliente`       | `nomeCompleto`   |
+| `cpfCliente`      | `Asco_Eco_Core_Model.Pedido`  | `cpfCliente`     |
+| `codCliente`      | `Asco_Eco_Core.Pedido`        | `codCliente`     |
+| `nomeLoja`        | `Asco_Eco_Core_Model.Entrega` | `location`       |
+| `status`          | `Asco_Eco_Core_Model.Entrega` | `status`         |
+| `valorPedido`     | `Asco_Eco_Core.Pedido`        | `DadosPagamento` |
 
-> **Nota**: Esta parte do SQL da capa é quase a mesma da API usada no N8N (https://homologa1.amctextil.com.br/api/customwd/v10/pedidos)
+**📌 Nota de referência**
 
-> **SQL busca de itens do pedido**: SELECT \* FROM Asco_Eco_Core_Model.PedidoItem Itemped WHERE Itemped.numeroPedido = '456000801123'
+- A estrutura da **capa** é muito próxima da API já usada no N8N (`/api/customwd/v10/pedidos`), então é recomendável reutilizar a mesma base SQL/joins para consistência.
+
+---
+
+### 🧺 Itens do Pedido (array `itens`)
+
+| Campo no item              | Origem (classe/tabela)           | Campo/coluna               |
+| -------------------------- | -------------------------------- | -------------------------- |
+| `codReduzido`              | `Asco_Eco_Core_Model.PedidoItem` | `codReduzido`              |
+| `descontoProporcionalCapa` | `Asco_Eco_Core_Model.PedidoItem` | `descontoProporcionalCapa` |
+| `precoUnitario`            | `Asco_Eco_Core_Model.PedidoItem` | `precoUnitario`            |
+| `quantidade`               | `Asco_Eco_Core_Model.PedidoItem` | `quantidade`               |
+| `sku`                      | `Asco_Eco_Core_Model.PedidoItem` | `sku`                      |
+| `skuEditado`               | `Asco_Eco_Core_Model.PedidoItem` | `skuEditado`               |
+| `valorBruto`               | `Asco_Eco_Core_Model.PedidoItem` | `valorBruto`               |
+| `valorDesconto`            | `Asco_Eco_Core_Model.PedidoItem` | `valorDesconto`            |
+| `nome`                     | `Asco_Eco_Core_Model.PedidoItem` | `nome`                     |
+
+---
+
+### 🔎 Query sugerida (itens por pedido)
+
+```sql
+SELECT *
+FROM Asco_Eco_Core_Model.PedidoItem Itemped
+WHERE Itemped.numeroPedido = '456000801123';
+```

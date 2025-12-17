@@ -961,12 +961,12 @@
   <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
       <span class="token property">"appId"</span><span class="token operator">:</span> <span class="token string">"colcci"</span><span class="token punctuation">,</span>
-      <span class="token property">"cnpjLoja"</span><span class="token operator">:</span> <span class="token string">"28288730000159"</span><span class="token punctuation">,</span>
-      <span class="token property">"codPedido"</span><span class="token operator">:</span> <span class="token string">"46000102793-F1"</span><span class="token punctuation">,</span>
-      <span class="token property">"dataHoraEmissao"</span><span class="token operator">:</span> <span class="token string">"2025-12-04 22:45:36"</span><span class="token punctuation">,</span>
-      <span class="token property">"nomeCliente"</span><span class="token operator">:</span> <span class="token string">"Nathalia Braga"</span><span class="token punctuation">,</span>
+      <span class="token property">"cnpjLoja"</span><span class="token operator">:</span> <span class="token string">"123887830000159"</span><span class="token punctuation">,</span>
+      <span class="token property">"codPedido"</span><span class="token operator">:</span> <span class="token string">"456000801123-F1"</span><span class="token punctuation">,</span>
+      <span class="token property">"dataHoraEmissao"</span><span class="token operator">:</span> <span class="token string">"2025-12-15 20:45:36"</span><span class="token punctuation">,</span>
+      <span class="token property">"nomeCliente"</span><span class="token operator">:</span> <span class="token string">"João da Silva"</span><span class="token punctuation">,</span>
       <span class="token property">"cpfCliente"</span><span class="token operator">:</span> <span class="token string">"12345678956"</span><span class="token punctuation">,</span>
-      <span class="token property">"codCliente"</span><span class="token operator">:</span> <span class="token number">2345</span><span class="token punctuation">,</span>
+      <span class="token property">"codCliente"</span><span class="token operator">:</span> <span class="token number">5412</span><span class="token punctuation">,</span>
       <span class="token property">"nomeLoja"</span><span class="token operator">:</span> <span class="token string">"FORUM | BRASILIA | PARK SHP | FRANQUIA  "</span><span class="token punctuation">,</span>
       <span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"DELIVERED"</span><span class="token punctuation">,</span>
       <span class="token property">"valorPedido"</span><span class="token operator">:</span> <span class="token number">650.27</span><span class="token punctuation">,</span>
@@ -988,47 +988,153 @@
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
-      <h4 id="relação-dos-campos-e-tabelas">Relação dos campos e tabelas</h4>
-      <p><strong>Capa do Pedido</strong></p>
+      <h2 id="-mapeamento-de-campos-origem-dos-dados">
+        🧩 Mapeamento de campos (origem dos dados)
+      </h2>
+      <h3 id="-capa-do-pedido-estrutura-principal-do-retorno">
+        🧾 Capa do Pedido (estrutura principal do retorno)
+      </h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Campo no retorno</th>
+            <th>Origem (classe/tabela)</th>
+            <th>Campo/coluna</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>appId</code></td>
+            <td><code>Asco_Eco_Core.Pedido</code></td>
+            <td><code>channelId</code></td>
+          </tr>
+          <tr>
+            <td><code>cnpjLoja</code></td>
+            <td><code>Asco_Eco_Core_Model.Entrega</code></td>
+            <td><code>cnpjLocation</code></td>
+          </tr>
+          <tr>
+            <td><code>codPedido</code></td>
+            <td><code>Asco_Eco_Core.Pedido</code></td>
+            <td><code>pedidoCliente</code></td>
+          </tr>
+          <tr>
+            <td><code>dataHoraEmissao</code></td>
+            <td><code>Asco_Eco_Core_Model.Pedido</code></td>
+            <td><code>dataEmissao</code></td>
+          </tr>
+          <tr>
+            <td><code>nomeCliente</code></td>
+            <td><code>Asco_Eco_Core.Cliente</code></td>
+            <td><code>nomeCompleto</code></td>
+          </tr>
+          <tr>
+            <td><code>cpfCliente</code></td>
+            <td><code>Asco_Eco_Core_Model.Pedido</code></td>
+            <td><code>cpfCliente</code></td>
+          </tr>
+          <tr>
+            <td><code>codCliente</code></td>
+            <td><code>Asco_Eco_Core.Pedido</code></td>
+            <td><code>codCliente</code></td>
+          </tr>
+          <tr>
+            <td><code>nomeLoja</code></td>
+            <td><code>Asco_Eco_Core_Model.Entrega</code></td>
+            <td><code>location</code></td>
+          </tr>
+          <tr>
+            <td><code>status</code></td>
+            <td><code>Asco_Eco_Core_Model.Entrega</code></td>
+            <td><code>status</code></td>
+          </tr>
+          <tr>
+            <td><code>valorPedido</code></td>
+            <td><code>Asco_Eco_Core.Pedido</code></td>
+            <td><code>DadosPagamento</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>📌 Nota de referência</strong></p>
       <ul>
-        <li><strong>appId</strong>: Asco_Eco_Core.Pedido.channelId</li>
         <li>
-          <strong>cnpjLoja</strong>: Asco_Eco_Core_Model.Entrega.cnpjLocation
-        </li>
-        <li><strong>codPedido</strong>: Asco_Eco_Core.Pedido.pedidoCliente</li>
-        <li>
-          <strong>dataHoraEmissao</strong>:
-          asco_Eco_Core_Model.Pedido.dataEmissao
-        </li>
-        <li>
-          <strong>nomeCliente</strong>: Asco_Eco_Core.Cliente.nomeCompleto
-        </li>
-        <li>
-          <strong>cpfCliente</strong>: Asco_Eco_Core_Model.Pedido.cpfCliente
-        </li>
-        <li><strong>codCliente</strong>: Asco_Eco_Core.Pedido.codCliente</li>
-        <li><strong>nomeLoja</strong>: Asco_Eco_Core_Model.Entrega.location</li>
-        <li><strong>status</strong>: Asco_Eco_Core_Model.Entrega.status</li>
-        <li>
-          <strong>valorPedido</strong>: Asco_Eco_Core.Pedido.DadosPagamento
+          A estrutura da <strong>capa</strong> é muito próxima da API já usada
+          no N8N (<code>/api/customwd/v10/pedidos</code>), então é recomendável
+          reutilizar a mesma base SQL/joins para consistência.
         </li>
       </ul>
-      <blockquote>
-        <p>
-          <strong>Nota</strong>: Esta parte do SQL da capa é quase a mesma da
-          API usada no N8N (<a
-            href="https://homologa1.amctextil.com.br/api/customwd/v10/pedidos"
-            >https://homologa1.amctextil.com.br/api/customwd/v10/pedidos</a
-          >)
-        </p>
-      </blockquote>
-      <blockquote>
-        <p>
-          <strong>SQL busca de itens do pedido</strong>: SELECT * FROM
-          Asco_Eco_Core_Model.PedidoItem Itemped WHERE Itemped.numeroPedido =
-          '456000801123'
-        </p>
-      </blockquote>
+      <hr />
+      <h3 id="-itens-do-pedido-array-itens">
+        🧺 Itens do Pedido (array <code>itens</code>)
+      </h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Campo no item</th>
+            <th>Origem (classe/tabela)</th>
+            <th>Campo/coluna</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>codReduzido</code></td>
+            <td><code>Asco_Eco_Core_Model.PedidoItem</code></td>
+            <td><code>codReduzido</code></td>
+          </tr>
+          <tr>
+            <td><code>descontoProporcionalCapa</code></td>
+            <td><code>Asco_Eco_Core_Model.PedidoItem</code></td>
+            <td><code>descontoProporcionalCapa</code></td>
+          </tr>
+          <tr>
+            <td><code>precoUnitario</code></td>
+            <td><code>Asco_Eco_Core_Model.PedidoItem</code></td>
+            <td><code>precoUnitario</code></td>
+          </tr>
+          <tr>
+            <td><code>quantidade</code></td>
+            <td><code>Asco_Eco_Core_Model.PedidoItem</code></td>
+            <td><code>quantidade</code></td>
+          </tr>
+          <tr>
+            <td><code>sku</code></td>
+            <td><code>Asco_Eco_Core_Model.PedidoItem</code></td>
+            <td><code>sku</code></td>
+          </tr>
+          <tr>
+            <td><code>skuEditado</code></td>
+            <td><code>Asco_Eco_Core_Model.PedidoItem</code></td>
+            <td><code>skuEditado</code></td>
+          </tr>
+          <tr>
+            <td><code>valorBruto</code></td>
+            <td><code>Asco_Eco_Core_Model.PedidoItem</code></td>
+            <td><code>valorBruto</code></td>
+          </tr>
+          <tr>
+            <td><code>valorDesconto</code></td>
+            <td><code>Asco_Eco_Core_Model.PedidoItem</code></td>
+            <td><code>valorDesconto</code></td>
+          </tr>
+          <tr>
+            <td><code>nome</code></td>
+            <td><code>Asco_Eco_Core_Model.PedidoItem</code></td>
+            <td><code>nome</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <hr />
+      <h3 id="-query-sugerida-itens-por-pedido">
+        🔎 Query sugerida (itens por pedido)
+      </h3>
+      <pre
+        data-role="codeBlock"
+        data-info="sql"
+        class="language-sql sql"
+      ><code><span class="token keyword keyword-SELECT">SELECT</span> <span class="token operator">*</span>
+<span class="token keyword keyword-FROM">FROM</span> Asco_Eco_Core_Model<span class="token punctuation">.</span>PedidoItem Itemped
+<span class="token keyword keyword-WHERE">WHERE</span> Itemped<span class="token punctuation">.</span>numeroPedido <span class="token operator">=</span> <span class="token string">'456000801123'</span><span class="token punctuation">;</span>
+</code></pre>
     </div>
   </body>
 </html>
