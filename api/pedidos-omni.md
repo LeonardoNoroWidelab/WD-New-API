@@ -98,39 +98,50 @@ type RequestBody = {
 {
   "data": [
     {
-      "channelId": "colcci",
+      "appId": "colcci",
       "cnpjLoja": "28288730000159",
       "codPedido": "46000102793-F1",
       "dataHoraEmissao": "2025-12-04 22:45:36",
       "nomeCliente": "Nathalia Braga",
       "cpfCliente": "12345678956",
+      "codCliente": 2345,
       "nomeLoja": "FORUM | BRASILIA | PARK SHP | FRANQUIA  ",
       "status": "DELIVERED",
-      "totalProdutos": 636.27,
-      "frete": 30.0,
-      "descontos": 16.0,
       "valorPedido": 650.27,
       "itens": [
+        // Asco_Eco_Core_Model.PedidoItem
         {
-          "ean": "7891234561230",
-          "descricao": "Blusa Colcci com detalhes",
-          "sku": "12343566",
-          "cor": "bege",
-          "tamanho": "M",
+          "codReduzido": "12343566",
+          "descontoProporcionalCapa": 82.6,
+          "precoUnitario": 617.4,
           "quantidade": 1,
-          "valor": 245.8
-        },
-        {
-          "ean": "7891234561280",
-          "descricao": "Calça Colcci",
-          "cor": "azul",
-          "tamanho": "P",
-          "sku": "873712731",
-          "quantidade": 1,
-          "valor": 390.47
+          "sku": "7901234561230",
+          "skuEditado": "032.01.02329-0-VC387-PP",
+          "valorBruto": 700,
+          "valorDesconto": 0,
+          "nome": "Blusa Colcci com detalhes" // Não temos o nome na tabela do CSW
         }
       ]
     }
   ]
 }
 ```
+
+#### Relação dos campos e tabelas
+
+**Capa do Pedido**
+
+- **appId**: Asco_Eco_Core.Pedido.channelId
+- **cnpjLoja**: Asco_Eco_Core_Model.Entrega.cnpjLocation
+- **codPedido**: Asco_Eco_Core.Pedido.pedidoCliente
+- **dataHoraEmissao**: asco_Eco_Core_Model.Pedido.dataEmissao
+- **nomeCliente**: Asco_Eco_Core.Cliente.nomeCompleto
+- **cpfCliente**: Asco_Eco_Core_Model.Pedido.cpfCliente
+- **codCliente**: Asco_Eco_Core.Pedido.codCliente
+- **nomeLoja**: Asco_Eco_Core_Model.Entrega.location
+- **status**: Asco_Eco_Core_Model.Entrega.status
+- **valorPedido**: Asco_Eco_Core.Pedido.DadosPagamento
+
+> **SQL itens**: SELECT \* FROM Asco_Eco_Core_Model.PedidoItem Itemped WHERE Itemped.numeroPedido = '010000801605'
+
+> Esta parte do SQL é quase a mesma da API usada no N8N (https://homologa1.amctextil.com.br/api/customwd/v10/pedidos)
