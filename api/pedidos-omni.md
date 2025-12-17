@@ -7,9 +7,7 @@ As APIs devem suportar filtros por **período** e **lista de CNPJs** (muitas loj
 
 ---
 
-## ✅ KPIs (Resumo)
-
-### `POST` - Buscar KPIs
+### `POST` - Buscar KPIs (Resumo)
 
 #### 📌 Finalidade
 
@@ -72,9 +70,7 @@ type RequestBody = {
 
 ---
 
-## ✅ Lista de Pedidos
-
-### `POST` - Buscar KPIs
+### `POST` - Buscar Lista de Pedidos
 
 #### 📌 Finalidade
 
