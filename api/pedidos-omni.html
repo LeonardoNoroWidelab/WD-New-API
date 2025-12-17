@@ -865,38 +865,38 @@
   <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"pendentesFaturamento"</span><span class="token operator">:</span> <span class="token number">12</span><span class="token punctuation">,</span>
     <span class="token property">"pendentesFaturamentoAtencao"</span><span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+    <span class="token property">"pendentesFaturamentoValor"</span><span class="token operator">:</span> <span class="token number">412.75</span><span class="token punctuation">,</span>
 
     <span class="token property">"aguardandoColeta"</span><span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
     <span class="token property">"aguardandoColetaAtencao"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+    <span class="token property">"aguardandoColetaValor"</span><span class="token operator">:</span> <span class="token number">248.65</span><span class="token punctuation">,</span>
 
     <span class="token property">"pendentesRetirada"</span><span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
     <span class="token property">"pendentesRetiradaAtencao"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token property">"pendentesRetiradaValor"</span><span class="token operator">:</span> <span class="token number">984.65</span><span class="token punctuation">,</span>
 
     <span class="token property">"faturados"</span><span class="token operator">:</span> <span class="token number">12</span><span class="token punctuation">,</span>
+    <span class="token property">"pecas"</span><span class="token operator">:</span> <span class="token number">98</span><span class="token punctuation">,</span>
+    <span class="token property">"pedidos"</span><span class="token operator">:</span> <span class="token number">48</span><span class="token punctuation">,</span>
 
-    <span class="token property">"pecasAtendimento"</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+    <span class="token property">"pecasAtendimento"</span><span class="token operator">:</span> <span class="token number">3.5</span><span class="token punctuation">,</span>
     <span class="token property">"ticketMedio"</span><span class="token operator">:</span> <span class="token number">2048.72</span><span class="token punctuation">,</span>
-    <span class="token property">"precoMedio"</span><span class="token operator">:</span> <span class="token number">1024.0</span><span class="token punctuation">,</span>
-    <span class="token property">"totalVendido"</span><span class="token operator">:</span> <span class="token number">98745.78</span><span class="token punctuation">,</span>
-    <span class="token property">"totalPecas"</span><span class="token operator">:</span> <span class="token number">18</span><span class="token punctuation">,</span>
-
-    <span class="token property">"pedidos"</span><span class="token operator">:</span> <span class="token number">48</span>
+    <span class="token property">"precoMedio"</span><span class="token operator">:</span> <span class="token number">1024.5</span><span class="token punctuation">,</span>
+    <span class="token property">"totalVendido"</span><span class="token operator">:</span> <span class="token number">98745.78</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
       <h4 id="-fórmulas-de-kpi">🧠 Fórmulas de KPI</h4>
       <ul>
         <li>
-          👕 <code>totalPecas</code> = Soma total da quantidade de peças nos
-          itens dos pedidos
+          👕 <code>pecas</code> = Soma total da quantidade de peças nos itens
+          dos pedidos
           <code>SUM(Asco_Eco_Core_Model.PedidoItem.quantidade)</code>
         </li>
         <li>
-          📦 <code>pecasAtendimento</code> = <code>totalPecas ÷ faturados</code>
+          📦 <code>pecasAtendimento</code> = <code>pecas ÷ faturados</code>
         </li>
-        <li>
-          💰 <code>precoMedio</code> = <code>totalVendido ÷ totalPecas</code>
-        </li>
+        <li>💰 <code>precoMedio</code> = <code>totalVendido ÷ pecas</code></li>
         <li>
           🧾 <code>ticketMedio</code> = <code>totalVendido ÷ faturados</code>
         </li>
@@ -905,15 +905,17 @@
       <ul>
         <li>
           <code>pendentesFaturamento</code> /
-          <code>pendentesFaturamentoAtencao</code>: <code>WAITING</code>
+          <code>pendentesFaturamentoAtencao</code> /
+          <code>pendentesFaturamentoValor</code>: <code>WAITING</code>
         </li>
         <li>
-          <code>aguardandoColeta</code> / <code>aguardandoColetaAtencao</code>:
-          <code>SHIPPING_READY</code>
+          <code>aguardandoColeta</code> / <code>aguardandoColetaAtencao</code> /
+          <code>aguardandoColetaValor</code>: <code>SHIPPING_READY</code>
         </li>
         <li>
           <code>pendentesRetirada</code> /
-          <code>pendentesRetiradaAtencao</code>: <code>PICKUP_READY</code>
+          <code>pendentesRetiradaAtencao</code> /
+          <code>pendentesRetiradaValor</code>: <code>PICKUP_READY</code>
         </li>
         <li>
           <code>faturados</code>, <code>pecasAtendimento</code>,
@@ -965,7 +967,7 @@
       ><code><span class="token keyword keyword-type">type</span> <span class="token class-name">RequestBody</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   appId<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: "colcci"</span>
   cnpj<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: ["98765432000156", "56776217000142", "01670690000159", ...]</span>
-  status<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: ["INVOICED", "SEND_READY", "SHIPPING_READY", "SHIPPED", "DELIVERED"]</span>
+  status<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: ["INVOICED", "SEND_READY", "SHIPPING_READY", "SHIPPED", "DELIVERED", ...]</span>
   dataInicio<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: "2025-12-01"</span>
   dataFim<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: "2025-12-31"</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
@@ -1006,12 +1008,12 @@
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
-      <h2 id="-mapeamento-de-campos-origem-dos-dados">
+      <h4 id="-mapeamento-de-campos-origem-dos-dados">
         🧩 Mapeamento de campos (origem dos dados)
-      </h2>
-      <h3 id="-capa-do-pedido-estrutura-principal-do-retorno">
+      </h4>
+      <h4 id="-capa-do-pedido-estrutura-principal-do-retorno">
         🧾 Capa do Pedido (estrutura principal do retorno)
-      </h3>
+      </h4>
       <table>
         <thead>
           <tr>
@@ -1081,10 +1083,9 @@
           reutilizar a mesma base SQL/joins para consistência.
         </li>
       </ul>
-      <hr />
-      <h3 id="-itens-do-pedido-array-itens">
+      <h4 id="-itens-do-pedido-array-itens">
         🧺 Itens do Pedido (array <code>itens</code>)
-      </h3>
+      </h4>
       <table>
         <thead>
           <tr>
@@ -1141,10 +1142,9 @@
           </tr>
         </tbody>
       </table>
-      <hr />
-      <h3 id="-query-sugerida-itens-por-pedido">
+      <h4 id="-query-sugerida-itens-por-pedido">
         🔎 Query sugerida (itens por pedido)
-      </h3>
+      </h4>
       <pre
         data-role="codeBlock"
         data-info="sql"
@@ -1152,6 +1152,59 @@
       ><code><span class="token keyword keyword-SELECT">SELECT</span> <span class="token operator">*</span>
 <span class="token keyword keyword-FROM">FROM</span> Asco_Eco_Core_Model<span class="token punctuation">.</span>PedidoItem Itemped
 <span class="token keyword keyword-WHERE">WHERE</span> Itemped<span class="token punctuation">.</span>numeroPedido <span class="token operator">=</span> <span class="token string">'456000801123'</span><span class="token punctuation">;</span>
+</code></pre>
+      <hr />
+      <h3 id="post---buscar-totais-de-pedidos-agrupados-por-loja">
+        <code>POST</code> - Buscar totais de Pedidos agrupados por loja
+      </h3>
+      <h4 id="-finalidade-2">📌 Finalidade</h4>
+      <p>
+        Buscar a lista de totais de pedidos agrupados conforme determinados
+        status e data. Ordenado pelo valor de pedidos em forma decrescente
+      </p>
+      <h4 id="️-endpoint-2">🛣️ Endpoint</h4>
+      <p><code>POST</code> <code>/pedidos/obterListaTotais</code></p>
+      <h4 id="-body-params-filtros-2">🔎 Body Params (filtros)</h4>
+      <pre
+        data-role="codeBlock"
+        data-info="ts"
+        class="language-ts ts"
+      ><code><span class="token keyword keyword-type">type</span> <span class="token class-name">RequestBody</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  appId<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: "colcci"</span>
+  status<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: ["INVOICED", "SEND_READY", "SHIPPING_READY", "SHIPPED", "DELIVERED", ...]</span>
+  dataInicio<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: "2025-12-01"</span>
+  dataFim<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// Ex.: "2025-12-31"</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+      <h4 id="-resposta-2">📄 Resposta</h4>
+      <pre
+        data-role="codeBlock"
+        data-info="json"
+        class="language-json json"
+      ><code><span class="token punctuation">{</span>
+  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"cnpjLoja"</span><span class="token operator">:</span> <span class="token string">"123887830000159"</span><span class="token punctuation">,</span>
+      <span class="token property">"pedidos"</span><span class="token operator">:</span> <span class="token number">48</span><span class="token punctuation">,</span>
+      <span class="token property">"valorTotalPedidos"</span><span class="token operator">:</span> <span class="token number">98745.78</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"cnpjLoja"</span><span class="token operator">:</span> <span class="token string">"123887830000112"</span><span class="token punctuation">,</span>
+      <span class="token property">"pedidos"</span><span class="token operator">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
+      <span class="token property">"valorTotalPedidos"</span><span class="token operator">:</span> <span class="token number">9745.65</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"cnpjLoja"</span><span class="token operator">:</span> <span class="token string">"123887830000189"</span><span class="token punctuation">,</span>
+      <span class="token property">"pedidos"</span><span class="token operator">:</span> <span class="token number">12</span><span class="token punctuation">,</span>
+      <span class="token property">"valorTotalPedidos"</span><span class="token operator">:</span> <span class="token number">8745.5</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"cnpjLoja"</span><span class="token operator">:</span> <span class="token string">"123887830000164"</span><span class="token punctuation">,</span>
+      <span class="token property">"pedidos"</span><span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+      <span class="token property">"valorTotalPedidos"</span><span class="token operator">:</span> <span class="token number">745.7</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
 </code></pre>
     </div>
   </body>

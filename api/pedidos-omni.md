@@ -35,38 +35,40 @@ type RequestBody = {
   "data": {
     "pendentesFaturamento": 12,
     "pendentesFaturamentoAtencao": 4,
+    "pendentesFaturamentoValor": 412.75,
 
     "aguardandoColeta": 5,
     "aguardandoColetaAtencao": 2,
+    "aguardandoColetaValor": 248.65,
 
     "pendentesRetirada": 5,
     "pendentesRetiradaAtencao": 1,
+    "pendentesRetiradaValor": 984.65,
 
     "faturados": 12,
+    "pecas": 98,
+    "pedidos": 48,
 
-    "pecasAtendimento": 3,
+    "pecasAtendimento": 3.5,
     "ticketMedio": 2048.72,
-    "precoMedio": 1024.0,
-    "totalVendido": 98745.78,
-    "totalPecas": 18,
-
-    "pedidos": 48
+    "precoMedio": 1024.5,
+    "totalVendido": 98745.78
   }
 }
 ```
 
 #### 🧠 Fórmulas de KPI
 
-- 👕 `totalPecas` = Soma total da quantidade de peças nos itens dos pedidos `SUM(Asco_Eco_Core_Model.PedidoItem.quantidade)`
-- 📦 `pecasAtendimento` = `totalPecas ÷ faturados`
-- 💰 `precoMedio` = `totalVendido ÷ totalPecas`
+- 👕 `pecas` = Soma total da quantidade de peças nos itens dos pedidos `SUM(Asco_Eco_Core_Model.PedidoItem.quantidade)`
+- 📦 `pecasAtendimento` = `pecas ÷ faturados`
+- 💰 `precoMedio` = `totalVendido ÷ pecas`
 - 🧾 `ticketMedio` = `totalVendido ÷ faturados`
 
 #### 📌 Regras de contagem (status)
 
-- `pendentesFaturamento` / `pendentesFaturamentoAtencao`: `WAITING`
-- `aguardandoColeta` / `aguardandoColetaAtencao`: `SHIPPING_READY`
-- `pendentesRetirada` / `pendentesRetiradaAtencao`: `PICKUP_READY`
+- `pendentesFaturamento` / `pendentesFaturamentoAtencao` / `pendentesFaturamentoValor`: `WAITING`
+- `aguardandoColeta` / `aguardandoColetaAtencao` / `aguardandoColetaValor`: `SHIPPING_READY`
+- `pendentesRetirada` / `pendentesRetiradaAtencao` / `pendentesRetiradaValor`: `PICKUP_READY`
 - `faturados`, `pecasAtendimento`, `ticketMedio`, `precoMedio`, `totalVendido`: `INVOICED | SEND_READY | SHIPPING_READY | SHIPPED | DELIVERED`
 - `pedidos`: `WAITING | PICKUP_READY | INVOICED | SEND_READY | SHIPPING_READY | SHIPPED | DELIVERED`
 
@@ -94,7 +96,7 @@ Buscar a lista de pedidos conforme determinadas lojas e determinados status.
 type RequestBody = {
   appId: string; // Ex.: "colcci"
   cnpj: string[]; // Ex.: ["98765432000156", "56776217000142", "01670690000159", ...]
-  status: string[]; // Ex.: ["INVOICED", "SEND_READY", "SHIPPING_READY", "SHIPPED", "DELIVERED"]
+  status: string[]; // Ex.: ["INVOICED", "SEND_READY", "SHIPPING_READY", "SHIPPED", "DELIVERED", ...]
   dataInicio: string; // Ex.: "2025-12-01"
   dataFim: string; // Ex.: "2025-12-31"
 };
@@ -135,9 +137,9 @@ type RequestBody = {
 }
 ```
 
-## 🧩 Mapeamento de campos (origem dos dados)
+#### 🧩 Mapeamento de campos (origem dos dados)
 
-### 🧾 Capa do Pedido (estrutura principal do retorno)
+#### 🧾 Capa do Pedido (estrutura principal do retorno)
 
 | Campo no retorno  | Origem (classe/tabela)        | Campo/coluna     |
 | ----------------- | ----------------------------- | ---------------- |
@@ -156,9 +158,7 @@ type RequestBody = {
 
 - A estrutura da **capa** é muito próxima da API já usada no N8N (`/api/customwd/v10/pedidos`), então é recomendável reutilizar a mesma base SQL/joins para consistência.
 
----
-
-### 🧺 Itens do Pedido (array `itens`)
+#### 🧺 Itens do Pedido (array `itens`)
 
 | Campo no item              | Origem (classe/tabela)           | Campo/coluna               |
 | -------------------------- | -------------------------------- | -------------------------- |
@@ -172,12 +172,62 @@ type RequestBody = {
 | `valorDesconto`            | `Asco_Eco_Core_Model.PedidoItem` | `valorDesconto`            |
 | `nome`                     | `Asco_Eco_Core_Model.PedidoItem` | `nome`                     |
 
----
-
-### 🔎 Query sugerida (itens por pedido)
+#### 🔎 Query sugerida (itens por pedido)
 
 ```sql
 SELECT *
 FROM Asco_Eco_Core_Model.PedidoItem Itemped
 WHERE Itemped.numeroPedido = '456000801123';
+```
+
+---
+
+### `POST` - Buscar totais de Pedidos agrupados por loja
+
+#### 📌 Finalidade
+
+Buscar a lista de totais de pedidos agrupados conforme determinados status e data. Ordenado pelo valor de pedidos em forma decrescente
+
+#### 🛣️ Endpoint
+
+`POST` `/pedidos/obterListaTotais`
+
+#### 🔎 Body Params (filtros)
+
+```ts
+type RequestBody = {
+  appId: string; // Ex.: "colcci"
+  status: string[]; // Ex.: ["INVOICED", "SEND_READY", "SHIPPING_READY", "SHIPPED", "DELIVERED", ...]
+  dataInicio: string; // Ex.: "2025-12-01"
+  dataFim: string; // Ex.: "2025-12-31"
+};
+```
+
+#### 📄 Resposta
+
+```json
+{
+  "data": [
+    {
+      "cnpjLoja": "123887830000159",
+      "pedidos": 48,
+      "valorTotalPedidos": 98745.78
+    },
+    {
+      "cnpjLoja": "123887830000112",
+      "pedidos": 10,
+      "valorTotalPedidos": 9745.65
+    },
+    {
+      "cnpjLoja": "123887830000189",
+      "pedidos": 12,
+      "valorTotalPedidos": 8745.5
+    },
+    {
+      "cnpjLoja": "123887830000164",
+      "pedidos": 5,
+      "valorTotalPedidos": 745.7
+    }
+  ]
+}
 ```
