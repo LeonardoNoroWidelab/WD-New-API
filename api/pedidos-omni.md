@@ -142,6 +142,6 @@ type RequestBody = {
 - **status**: Asco_Eco_Core_Model.Entrega.status
 - **valorPedido**: Asco_Eco_Core.Pedido.DadosPagamento
 
-> **SQL itens**: SELECT \* FROM Asco_Eco_Core_Model.PedidoItem Itemped WHERE Itemped.numeroPedido = '010000801605'
+> **Nota**: Esta parte do SQL da capa é quase a mesma da API usada no N8N (https://homologa1.amctextil.com.br/api/customwd/v10/pedidos)
 
-> Esta parte do SQL é quase a mesma da API usada no N8N (https://homologa1.amctextil.com.br/api/customwd/v10/pedidos)
+> **SQL busca de itens do pedido**: SELECT \* FROM Asco_Eco_Core_Model.PedidoItem Itemped WHERE Itemped.numeroPedido = '456000801123'
