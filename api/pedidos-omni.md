@@ -48,11 +48,19 @@ type RequestBody = {
     "ticketMedio": 2048.72,
     "precoMedio": 1024.0,
     "totalVendido": 98745.78,
+    "totalPecas": 18,
 
     "pedidos": 48
   }
 }
 ```
+
+#### 🧠 Fórmulas de KPI
+
+- 👕 `totalPecas` = Soma total da quantidade de peças nos itens dos pedidos `SUM(Asco_Eco_Core_Model.PedidoItem.quantidade)`
+- 📦 `pecasAtendimento` = `totalPecas ÷ faturados`
+- 💰 `precoMedio` = `totalVendido ÷ totalPecas`
+- 🧾 `ticketMedio` = `totalVendido ÷ faturados`
 
 #### 📌 Regras de contagem (status)
 

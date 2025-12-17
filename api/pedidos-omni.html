@@ -878,11 +878,29 @@
     <span class="token property">"ticketMedio"</span><span class="token operator">:</span> <span class="token number">2048.72</span><span class="token punctuation">,</span>
     <span class="token property">"precoMedio"</span><span class="token operator">:</span> <span class="token number">1024.0</span><span class="token punctuation">,</span>
     <span class="token property">"totalVendido"</span><span class="token operator">:</span> <span class="token number">98745.78</span><span class="token punctuation">,</span>
+    <span class="token property">"totalPecas"</span><span class="token operator">:</span> <span class="token number">18</span><span class="token punctuation">,</span>
 
     <span class="token property">"pedidos"</span><span class="token operator">:</span> <span class="token number">48</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
+      <h4 id="-fórmulas-de-kpi">🧠 Fórmulas de KPI</h4>
+      <ul>
+        <li>
+          👕 <code>totalPecas</code> = Soma total da quantidade de peças nos
+          itens dos pedidos
+          <code>SUM(Asco_Eco_Core_Model.PedidoItem.quantidade)</code>
+        </li>
+        <li>
+          📦 <code>pecasAtendimento</code> = <code>totalPecas ÷ faturados</code>
+        </li>
+        <li>
+          💰 <code>precoMedio</code> = <code>totalVendido ÷ totalPecas</code>
+        </li>
+        <li>
+          🧾 <code>ticketMedio</code> = <code>totalVendido ÷ faturados</code>
+        </li>
+      </ul>
       <h4 id="-regras-de-contagem-status">📌 Regras de contagem (status)</h4>
       <ul>
         <li>
