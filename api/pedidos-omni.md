@@ -78,7 +78,7 @@ Buscar a lista de pedidos conforme determinadas lojas e determinados status.
 
 #### 🛣️ Endpoint
 
-`POST` `/pedidos/lista`
+`POST` `/pedidos/obterLista`
 
 #### 🔎 Body Params (filtros)
 
