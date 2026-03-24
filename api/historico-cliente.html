@@ -817,26 +817,64 @@
   </head>
   <body for="html-export">
     <div class="crossnote markdown-preview">
-      <h2 id="cupom-vendedor---histórico-do-cliente">
-        Cupom vendedor - Histórico do Cliente
+      <h2 id="️-cupom-vendedor--histórico-do-cliente">
+        🎟️ Cupom Vendedor — Histórico do Cliente
       </h2>
-      <h3 id="get--buscar-lista-de-clientes">
-        <code>GET</code>- Buscar lista de clientes
+      <p>
+        <strong>Objetivo:</strong> APIs para o app de Histórico de Clientes,
+        exibindo:
+      </p>
+      <ul>
+        <li>
+          ranking por <strong>posição</strong> (clientes que mais compram)
+        </li>
+        <li><strong>dias sem comprar</strong></li>
+        <li>
+          <strong>total gasto</strong> no <strong>ano selecionado</strong>
+        </li>
+        <li><strong>compras mês a mês</strong> do ano selecionado</li>
+        <li>
+          <strong>pedidos do cliente</strong> em um
+          <strong>mês/ano</strong> específico
+        </li>
+      </ul>
+      <blockquote>
+        <p>📌 Padrões:</p>
+        <ul>
+          <li>
+            <code>appid</code> e <code>ano</code> são obrigatórios onde houver
+            cálculo de totais.
+          </li>
+          <li>
+            Rotas devem manter a ordenação por <code>posicao</code> (ranking).
+          </li>
+        </ul>
+      </blockquote>
+      <hr />
+      <h3 id="get---buscar-lista-de-clientes">
+        <code>GET</code> - Buscar lista de clientes
       </h3>
       <h4 id="-finalidade">📌 Finalidade</h4>
       <p>
-        Buscar a lista de clientes do vendedor com totais do ano selecionado. O
-        ano é obrigatório. Essa rota pode ter paginação, pois pode haver muitos
-        clientes para um mesmo vendedor. Lembrar e manter ordenado conforme a
-        posição dele.
+        Buscar a lista de clientes do vendedor com totais do
+        <strong>ano selecionado</strong>.<br />
+        Deve suportar <strong>paginação</strong> e retornar clientes
+        <strong>ordenados por posição</strong>.
       </p>
       <h4 id="️-endpoint">🛣️ Endpoint</h4>
+      <p><code>GET</code> <code>/vendedor/:userId/clientes</code></p>
       <p>
-        <code>/vendedor/:userId/clientes</code><br />
+        ✅ Exemplo:<br />
         <code
           >/vendedor/colcci-cristiano.bortolini@widelab.com.br/clientes?appid=colcci&amp;ano=2025&amp;page=1</code
         >
       </p>
+      <h4 id="-query-params">🔎 Query Params</h4>
+      <ul>
+        <li><code>appid</code> → <strong>obrigatório</strong></li>
+        <li><code>ano</code> → <strong>obrigatório</strong></li>
+        <li><code>page</code> → opcional (default: <code>1</code>)</li>
+      </ul>
       <h4 id="-resposta">📄 Resposta</h4>
       <pre
         data-role="codeBlock"
@@ -869,61 +907,40 @@
       <span class="token property">"telefone"</span><span class="token operator">:</span> <span class="token string">"11986331938"</span><span class="token punctuation">,</span>
       <span class="token property">"totalGasto"</span><span class="token operator">:</span> <span class="token number">9876.31</span><span class="token punctuation">,</span>
       <span class="token property">"posicao"</span><span class="token operator">:</span> <span class="token number">1</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"nome"</span><span class="token operator">:</span> <span class="token string">"Nelson Alexandre Mateus Brito"</span><span class="token punctuation">,</span>
-      <span class="token property">"diasSemComprar"</span><span class="token operator">:</span> <span class="token number">32</span><span class="token punctuation">,</span>
-      <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"34078303358"</span><span class="token punctuation">,</span>
-      <span class="token property">"nascimento"</span><span class="token operator">:</span> <span class="token string">"1975-02-27"</span><span class="token punctuation">,</span>
-      <span class="token property">"sexo"</span><span class="token operator">:</span> <span class="token string">"M"</span><span class="token punctuation">,</span>
-      <span class="token property">"email"</span><span class="token operator">:</span> <span class="token string">"nelson-brito97@eletrovip.com"</span><span class="token punctuation">,</span>
-      <span class="token property">"cep"</span><span class="token operator">:</span> <span class="token string">"45026415"</span><span class="token punctuation">,</span>
-      <span class="token property">"endereco"</span><span class="token operator">:</span> <span class="token string">"Rua Professora Francisca"</span><span class="token punctuation">,</span>
-      <span class="token property">"numero"</span><span class="token operator">:</span> <span class="token string">"860"</span><span class="token punctuation">,</span>
-      <span class="token property">"bairro"</span><span class="token operator">:</span> <span class="token string">"Boa Vista"</span><span class="token punctuation">,</span>
-      <span class="token property">"cidade"</span><span class="token operator">:</span> <span class="token string">"Vitória da Conquista"</span><span class="token punctuation">,</span>
-      <span class="token property">"estado"</span><span class="token operator">:</span> <span class="token string">"BA"</span><span class="token punctuation">,</span>
-      <span class="token property">"telefone"</span><span class="token operator">:</span> <span class="token string">"77981946813"</span><span class="token punctuation">,</span>
-      <span class="token property">"totalGasto"</span><span class="token operator">:</span> <span class="token number">8775.51</span><span class="token punctuation">,</span>
-      <span class="token property">"posicao"</span><span class="token operator">:</span> <span class="token number">2</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"nome"</span><span class="token operator">:</span> <span class="token string">"Enrico José Guilherme Melo"</span><span class="token punctuation">,</span>
-      <span class="token property">"diasSemComprar"</span><span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
-      <span class="token property">"cpf"</span><span class="token operator">:</span> <span class="token string">"63007247608"</span><span class="token punctuation">,</span>
-      <span class="token property">"nascimento"</span><span class="token operator">:</span> <span class="token string">"1951-01-08"</span><span class="token punctuation">,</span>
-      <span class="token property">"sexo"</span><span class="token operator">:</span> <span class="token string">"M"</span><span class="token punctuation">,</span>
-      <span class="token property">"email"</span><span class="token operator">:</span> <span class="token string">"enricojosemelo@polifiltro.com.br"</span><span class="token punctuation">,</span>
-      <span class="token property">"cep"</span><span class="token operator">:</span> <span class="token string">"91150136"</span><span class="token punctuation">,</span>
-      <span class="token property">"endereco"</span><span class="token operator">:</span> <span class="token string">"Rua F"</span><span class="token punctuation">,</span>
-      <span class="token property">"numero"</span><span class="token operator">:</span> <span class="token string">"652"</span><span class="token punctuation">,</span>
-      <span class="token property">"bairro"</span><span class="token operator">:</span> <span class="token string">"Rubem Berta"</span><span class="token punctuation">,</span>
-      <span class="token property">"cidade"</span><span class="token operator">:</span> <span class="token string">"Porto Alegre"</span><span class="token punctuation">,</span>
-      <span class="token property">"estado"</span><span class="token operator">:</span> <span class="token string">"RS"</span><span class="token punctuation">,</span>
-      <span class="token property">"telefone"</span><span class="token operator">:</span> <span class="token string">"51988859355"</span><span class="token punctuation">,</span>
-      <span class="token property">"totalGasto"</span><span class="token operator">:</span> <span class="token number">7654.21</span><span class="token punctuation">,</span>
-      <span class="token property">"posicao"</span><span class="token operator">:</span> <span class="token number">3</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
-      <h3 id="get--buscar-dados-de-um-cliente-só">
-        <code>GET</code>- Buscar dados de um cliente só
+      <hr />
+      <h3 id="get---buscar-detalhes-de-um-cliente">
+        <code>GET</code> - Buscar detalhes de um cliente
       </h3>
       <h4 id="-finalidade-1">📌 Finalidade</h4>
       <p>
-        Buscar os dados de um cliente cliente. Usado para montar a tela de
-        detalhes do cliente. Deve utilizar um identificador para saber qual
-        cliente está buscando, CPF ou outro ID se houver. Passa o ano e o appId
-        obrigatório para soma de totais
+        Buscar os dados de <strong>um cliente específico</strong> (para tela de
+        detalhes), incluindo:
       </p>
+      <ul>
+        <li>ranking (<code>posicao</code>)</li>
+        <li>
+          totais do ano (<code>totalGasto</code>,
+          <code>pedidosRealizados</code>)
+        </li>
+        <li>lista <code>comprasAno</code> (12 meses do ano selecionado)</li>
+      </ul>
       <h4 id="️-endpoint-1">🛣️ Endpoint</h4>
+      <p><code>GET</code> <code>/vendedor/:userId/clientes/:cpf</code></p>
       <p>
-        <code>/vendedor/:userId/clientes/:cpf</code><br />
+        ✅ Exemplo:<br />
         <code
-          >/vendedor/colcci-cristiano.bortolini@widelab.com.br/cliente/63007247608?appid=colcci&amp;ano=2025</code
+          >/vendedor/colcci-cristiano.bortolini@widelab.com.br/clientes/63007247608?appid=colcci&amp;ano=2025</code
         >
       </p>
+      <h4 id="-query-params-1">🔎 Query Params</h4>
+      <ul>
+        <li><code>appid</code> → <strong>obrigatório</strong></li>
+        <li><code>ano</code> → <strong>obrigatório</strong></li>
+      </ul>
       <h4 id="-resposta-1">📄 Resposta</h4>
       <pre
         data-role="codeBlock"
@@ -964,22 +981,43 @@
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-      <h3 id="get--buscar-lista-de-pedidos-do-cliente-no-ano-e-mês">
-        <code>GET</code>- Buscar lista de pedidos do cliente no ano e mês
+      <h4 id="-regras-importantes">📌 Regras importantes</h4>
+      <ul>
+        <li>
+          <code>diasSemComprar</code>: diferença em dias entre
+          <strong>hoje</strong> e a data do <strong>último pedido</strong> do
+          cliente para a marca (<code>appid</code>) dentro do contexto do
+          vendedor (se aplicável).
+        </li>
+      </ul>
+      <hr />
+      <h3 id="get---buscar-pedidos-do-cliente-por-mêsano">
+        <code>GET</code> - Buscar pedidos do cliente por mês/ano
       </h3>
       <h4 id="-finalidade-2">📌 Finalidade</h4>
       <p>
-        Buscar os pedidos de um cliente cliente. Deve utilizar um identificador
-        para saber qual cliente está buscando, CPF ou outro ID se houver. Passa
-        o ano, mês e o appId obrigatório.
+        Buscar os pedidos de um cliente no <strong>mês</strong> e
+        <strong>ano</strong> selecionados.
       </p>
       <h4 id="️-endpoint-2">🛣️ Endpoint</h4>
       <p>
-        <code>/vendedor/:userId/clientes/:cpf/pedidos</code><br />
+        <code>GET</code> <code>/vendedor/:userId/clientes/:cpf/pedidos</code>
+      </p>
+      <p>
+        ✅ Exemplo:<br />
         <code
-          >/vendedor/colcci-cristiano.bortolini@widelab.com.br/cliente/63007247608/pedidos?appid=colcci&amp;ano=2025&amp;mes=07</code
+          >/vendedor/colcci-cristiano.bortolini@widelab.com.br/clientes/63007247608/pedidos?appid=colcci&amp;ano=2025&amp;mes=7</code
         >
       </p>
+      <h4 id="-query-params-2">🔎 Query Params</h4>
+      <ul>
+        <li><code>appid</code> → <strong>obrigatório</strong></li>
+        <li><code>ano</code> → <strong>obrigatório</strong></li>
+        <li>
+          <code>mes</code> → <strong>obrigatório</strong> (1 a 12; aceitar
+          <code>07</code> ou <code>7</code>)
+        </li>
+      </ul>
       <h4 id="-resposta-2">📄 Resposta</h4>
       <pre
         data-role="codeBlock"
@@ -990,38 +1028,11 @@
     <span class="token punctuation">{</span>
       <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">2314</span><span class="token punctuation">,</span>
       <span class="token property">"pedido"</span><span class="token operator">:</span> <span class="token string">"22000139133"</span><span class="token punctuation">,</span>
-      <span class="token property">"valor"</span><span class="token operator">:</span> <span class="token string">"461.5"</span><span class="token punctuation">,</span>
+      <span class="token property">"valor"</span><span class="token operator">:</span> <span class="token number">461.5</span><span class="token punctuation">,</span>
       <span class="token property">"qtd"</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
       <span class="token property">"data"</span><span class="token operator">:</span> <span class="token string">"2025-07-10 17:00:14"</span><span class="token punctuation">,</span>
       <span class="token property">"nfe"</span><span class="token operator">:</span> <span class="token string">"https://amc-adapcon-nfecommerce.s3-sa-east-1.amazonaws.com/2c4d1cfe48068522f8072546a8455ce1.pdf"</span><span class="token punctuation">,</span>
       <span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"Entregue"</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">2313</span><span class="token punctuation">,</span>
-      <span class="token property">"pedido"</span><span class="token operator">:</span> <span class="token string">"22000139111"</span><span class="token punctuation">,</span>
-      <span class="token property">"valor"</span><span class="token operator">:</span> <span class="token string">"725.4"</span><span class="token punctuation">,</span>
-      <span class="token property">"qtd"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
-      <span class="token property">"data"</span><span class="token operator">:</span> <span class="token string">"2025-07-10 14:31:22"</span><span class="token punctuation">,</span>
-      <span class="token property">"nfe"</span><span class="token operator">:</span> <span class="token string">"https://amc-adapcon-nfecommerce.s3-sa-east-1.amazonaws.com/daa18d0459f9aecf526963ad83386a07.pdf"</span><span class="token punctuation">,</span>
-      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"Entregue"</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">2312</span><span class="token punctuation">,</span>
-      <span class="token property">"pedido"</span><span class="token operator">:</span> <span class="token string">"22000138960"</span><span class="token punctuation">,</span>
-      <span class="token property">"valor"</span><span class="token operator">:</span> <span class="token string">"345.87"</span><span class="token punctuation">,</span>
-      <span class="token property">"qtd"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
-      <span class="token property">"data"</span><span class="token operator">:</span> <span class="token string">"2025-07-08 21:26:57"</span><span class="token punctuation">,</span>
-      <span class="token property">"nfe"</span><span class="token operator">:</span> <span class="token string">"https://amc-adapcon-nfecommerce.s3-sa-east-1.amazonaws.com/6F62EC64-5CED-11F0-878D-00505693900D.pdf"</span><span class="token punctuation">,</span>
-      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"Entregue"</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">2311</span><span class="token punctuation">,</span>
-      <span class="token property">"pedido"</span><span class="token operator">:</span> <span class="token string">"22000138950"</span><span class="token punctuation">,</span>
-      <span class="token property">"valor"</span><span class="token operator">:</span> <span class="token string">"714.15"</span><span class="token punctuation">,</span>
-      <span class="token property">"qtd"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
-      <span class="token property">"data"</span><span class="token operator">:</span> <span class="token string">"2025-07-08 19:53:42"</span><span class="token punctuation">,</span>
-      <span class="token property">"nfe"</span><span class="token operator">:</span> <span class="token string">"https://amc-adapcon-nfecommerce.s3-sa-east-1.amazonaws.com/543d2c0d65a85775ddcddc9c6ef603f1.pdf"</span><span class="token punctuation">,</span>
-      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"Aguardando"</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>

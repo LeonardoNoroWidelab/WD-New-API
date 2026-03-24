@@ -1,15 +1,39 @@
-## Cupom vendedor - Histórico do Cliente
+## 🎟️ Cupom Vendedor — Histórico do Cliente
 
-### `GET`- Buscar lista de clientes
+**Objetivo:** APIs para o app de Histórico de Clientes, exibindo:
+
+- ranking por **posição** (clientes que mais compram)
+- **dias sem comprar**
+- **total gasto** no **ano selecionado**
+- **compras mês a mês** do ano selecionado
+- **pedidos do cliente** em um **mês/ano** específico
+
+> 📌 Padrões:
+>
+> - `appid` e `ano` são obrigatórios onde houver cálculo de totais.
+> - Rotas devem manter a ordenação por `posicao` (ranking).
+
+---
+
+### `GET` - Buscar lista de clientes
 
 #### 📌 Finalidade
 
-Buscar a lista de clientes do vendedor com totais do ano selecionado. O ano é obrigatório. Essa rota pode ter paginação, pois pode haver muitos clientes para um mesmo vendedor. Lembrar e manter ordenado conforme a posição dele.
+Buscar a lista de clientes do vendedor com totais do **ano selecionado**.  
+Deve suportar **paginação** e retornar clientes **ordenados por posição**.
 
 #### 🛣️ Endpoint
 
-`/vendedor/:userId/clientes`
+`GET` `/vendedor/:userId/clientes`
+
+✅ Exemplo:
 `/vendedor/colcci-cristiano.bortolini@widelab.com.br/clientes?appid=colcci&ano=2025&page=1`
+
+#### 🔎 Query Params
+
+- `appid` → **obrigatório**
+- `ano` → **obrigatório**
+- `page` → opcional (default: `1`)
 
 #### 📄 Resposta
 
@@ -41,55 +65,34 @@ Buscar a lista de clientes do vendedor com totais do ano selecionado. O ano é o
       "telefone": "11986331938",
       "totalGasto": 9876.31,
       "posicao": 1
-    },
-    {
-      "nome": "Nelson Alexandre Mateus Brito",
-      "diasSemComprar": 32,
-      "cpf": "34078303358",
-      "nascimento": "1975-02-27",
-      "sexo": "M",
-      "email": "nelson-brito97@eletrovip.com",
-      "cep": "45026415",
-      "endereco": "Rua Professora Francisca",
-      "numero": "860",
-      "bairro": "Boa Vista",
-      "cidade": "Vitória da Conquista",
-      "estado": "BA",
-      "telefone": "77981946813",
-      "totalGasto": 8775.51,
-      "posicao": 2
-    },
-    {
-      "nome": "Enrico José Guilherme Melo",
-      "diasSemComprar": 5,
-      "cpf": "63007247608",
-      "nascimento": "1951-01-08",
-      "sexo": "M",
-      "email": "enricojosemelo@polifiltro.com.br",
-      "cep": "91150136",
-      "endereco": "Rua F",
-      "numero": "652",
-      "bairro": "Rubem Berta",
-      "cidade": "Porto Alegre",
-      "estado": "RS",
-      "telefone": "51988859355",
-      "totalGasto": 7654.21,
-      "posicao": 3
     }
   ]
 }
 ```
 
-### `GET`- Buscar dados de um cliente só
+---
+
+### `GET` - Buscar detalhes de um cliente
 
 #### 📌 Finalidade
 
-Buscar os dados de um cliente cliente. Usado para montar a tela de detalhes do cliente. Deve utilizar um identificador para saber qual cliente está buscando, CPF ou outro ID se houver. Passa o ano e o appId obrigatório para soma de totais
+Buscar os dados de **um cliente específico** (para tela de detalhes), incluindo:
+
+- ranking (`posicao`)
+- totais do ano (`totalGasto`, `pedidosRealizados`)
+- lista `comprasAno` (12 meses do ano selecionado)
 
 #### 🛣️ Endpoint
 
-`/vendedor/:userId/clientes/:cpf`
-`/vendedor/colcci-cristiano.bortolini@widelab.com.br/cliente/63007247608?appid=colcci&ano=2025`
+`GET` `/vendedor/:userId/clientes/:cpf`
+
+✅ Exemplo:
+`/vendedor/colcci-cristiano.bortolini@widelab.com.br/clientes/63007247608?appid=colcci&ano=2025`
+
+#### 🔎 Query Params
+
+- `appid` → **obrigatório**
+- `ano` → **obrigatório**
 
 #### 📄 Resposta
 
@@ -130,16 +133,30 @@ Buscar os dados de um cliente cliente. Usado para montar a tela de detalhes do c
 }
 ```
 
-### `GET`- Buscar lista de pedidos do cliente no ano e mês
+#### 📌 Regras importantes
+
+- `diasSemComprar`: diferença em dias entre **hoje** e a data do **último pedido** do cliente para a marca (`appid`) dentro do contexto do vendedor (se aplicável).
+
+---
+
+### `GET` - Buscar pedidos do cliente por mês/ano
 
 #### 📌 Finalidade
 
-Buscar os pedidos de um cliente cliente. Deve utilizar um identificador para saber qual cliente está buscando, CPF ou outro ID se houver. Passa o ano, mês e o appId obrigatório.
+Buscar os pedidos de um cliente no **mês** e **ano** selecionados.
 
 #### 🛣️ Endpoint
 
-`/vendedor/:userId/clientes/:cpf/pedidos`
-`/vendedor/colcci-cristiano.bortolini@widelab.com.br/cliente/63007247608/pedidos?appid=colcci&ano=2025&mes=07`
+`GET` `/vendedor/:userId/clientes/:cpf/pedidos`
+
+✅ Exemplo:
+`/vendedor/colcci-cristiano.bortolini@widelab.com.br/clientes/63007247608/pedidos?appid=colcci&ano=2025&mes=7`
+
+#### 🔎 Query Params
+
+- `appid` → **obrigatório**
+- `ano` → **obrigatório**
+- `mes` → **obrigatório** (1 a 12; aceitar `07` ou `7`)
 
 #### 📄 Resposta
 
@@ -149,38 +166,11 @@ Buscar os pedidos de um cliente cliente. Deve utilizar um identificador para sab
     {
       "id": 2314,
       "pedido": "22000139133",
-      "valor": "461.5",
+      "valor": 461.5,
       "qtd": 3,
       "data": "2025-07-10 17:00:14",
       "nfe": "https://amc-adapcon-nfecommerce.s3-sa-east-1.amazonaws.com/2c4d1cfe48068522f8072546a8455ce1.pdf",
       "status": "Entregue"
-    },
-    {
-      "id": 2313,
-      "pedido": "22000139111",
-      "valor": "725.4",
-      "qtd": 2,
-      "data": "2025-07-10 14:31:22",
-      "nfe": "https://amc-adapcon-nfecommerce.s3-sa-east-1.amazonaws.com/daa18d0459f9aecf526963ad83386a07.pdf",
-      "status": "Entregue"
-    },
-    {
-      "id": 2312,
-      "pedido": "22000138960",
-      "valor": "345.87",
-      "qtd": 1,
-      "data": "2025-07-08 21:26:57",
-      "nfe": "https://amc-adapcon-nfecommerce.s3-sa-east-1.amazonaws.com/6F62EC64-5CED-11F0-878D-00505693900D.pdf",
-      "status": "Entregue"
-    },
-    {
-      "id": 2311,
-      "pedido": "22000138950",
-      "valor": "714.15",
-      "qtd": 2,
-      "data": "2025-07-08 19:53:42",
-      "nfe": "https://amc-adapcon-nfecommerce.s3-sa-east-1.amazonaws.com/543d2c0d65a85775ddcddc9c6ef603f1.pdf",
-      "status": "Aguardando"
     }
   ]
 }
